@@ -2,6 +2,7 @@ var gulp = require('gulp'),
   nodemon = require('gulp-nodemon'),
   plumber = require('gulp-plumber'),
   livereload = require('gulp-livereload'),
+  svgSprite	 = require('gulp-svg-sprite'),
   sass = require('gulp-sass');
 
 gulp.task('sass', function () {
@@ -9,6 +10,31 @@ gulp.task('sass', function () {
     .pipe(gulp.dest('./public/css'))
     .pipe(livereload());
 });
+
+var svg_config = {
+  shape : {
+    id : {
+      generator : "icon-%s"
+    }
+  },
+  mode : {
+    symbol : {
+      prefix : "%s",
+      sprite : "bg-sprite.svg",
+      render : { scss : true },
+      example : true
+    }
+  }
+};
+
+gulp.task('svg', function () {
+  gulp.src('.**/*.svg', {cwd: './public/img/svg'})
+    .pipe(svgSprite(svg_config)).on('error', function(error){
+      console.log(error + " error");
+  })
+    .pipe(gulp.dest('./public/img/svg'));
+});
+
 
 gulp.task('watch', function() {
   gulp.watch('./public/css/*.scss', ['sass']);
@@ -34,6 +60,7 @@ gulp.task('develop', function () {
 });
 
 gulp.task('default', [
+  'svg',
   'sass',
   'develop',
   'watch'
