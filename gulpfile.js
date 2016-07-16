@@ -17,9 +17,9 @@ $.path.task.forEach(function(taskPath) {
 });
 
 $.gulp.task('default', $.gulp.series(
-	'sprites_svg',
-	$.gulp.parallel(
+	// 'sprites_svg',
     'nodemon',
+	$.gulp.parallel(
 		'sass',
 		'js.lint'
 		),
