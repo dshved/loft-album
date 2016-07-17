@@ -8,6 +8,9 @@ global.$ = {
 		app: require('./gulp/paths/app.js')
 	},
 	gulp: require('gulp'),
+	browserify: require('browserify'),
+	vinyl: require('vinyl-source-stream'),
+	buffer: require('vinyl-buffer'),
 	browserSync: require('browser-sync').create(),
 	gp: require('gulp-load-plugins')()
 };
@@ -18,9 +21,9 @@ $.path.task.forEach(function(taskPath) {
 
 $.gulp.task('default', $.gulp.series(
 	// 'sprites_svg',
+	'sass',
     'nodemon',
 	$.gulp.parallel(
-		'sass',
 		'js.lint'
 		),
 	$.gulp.parallel(

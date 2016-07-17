@@ -10,7 +10,7 @@ module.exports = function (app) {
 router.post('/registration', function (req, res, next) {
   var name = req.body.name,
     email = req.body.email,
-    password = req.body.email;
+    password = req.body.password;
 
   if ( !(name && email && password) ) {
     res.status(400);
