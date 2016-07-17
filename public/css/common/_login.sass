@@ -1,0 +1,105 @@
+.title__p
+	color: #fff
+	text-align: center
+	// font-family: ProximaNova
+	font-size: 16px
+	font-weight: 300
+	line-height: 24px
+	width: 63%
+	margin: auto
+	padding: 10px 0 37px
+
+.login__form
+	display: flex
+	flex-flow: column
+	min-width: 280px
+	background-color: #fff
+	border-radius: 20px
+	overflow: hidden
+	// display: none
+
+.login__form > input[name="email"]
+	border-radius: 25px 25px 0 0px
+
+.input__row
+	display: flex
+	flex-flow: row-reverse
+	justify-content: flex-end
+	border-bottom: 1px solid $btn_border
+
+.form__field
+	border: none
+	padding-top: 13px
+	padding-bottom: 13px
+	width: 75%
+	color: #323232
+	&:focus
+	outline: none
+
+.label__input
+	align-self: center
+	margin-left: 20px
+
+.svg__icon
+	height: auto
+	width: 15px
+	padding-top: 3px
+	padding-right: 10px
+	fill: $icon_color
+	transition: $hover
+
+.form__field:focus + .label__input > .svg__icon
+	fill: $icon_color_active
+	transition: $hover
+
+.regestration
+	padding-top: 13px
+	padding-bottom: 16px
+	padding-left: 20px
+
+.forget__link
+	padding-top: 13px
+	padding-bottom: 16px
+	padding-left: 20px
+
+.form__error
+	display: none
+	opacity: 0.9
+	background-color: #ffe0e0
+	border-radius: 3px
+	margin: 0 20px 20px
+	padding: 7px 11px
+
+.error_text
+	color: #323232
+	// font-family: ProximaNova
+	font-size: 14px
+	font-weight: 600
+	line-height: 16px
+
+.text__question
+	// font-family: ProximaNova
+	font-size: 14px
+	line-height: 24px
+	opacity: .8
+	color: $form-text_color
+	font-weight: 300
+	padding: 5px
+
+.btn
+	margin: auto
+	width: 240px
+	height: 40px
+	background-color: $btn_bg
+	border: 1px solid $btn_bg
+	border-radius: 25px
+	color: $btn_color
+	// font-family: Panton
+	font-size: 14px
+	font-weight: 700
+	line-height: 21px
+	cursor: pointer
+	transition: $hover
+	&:hover
+		background-color: $btn_bg_hover
+		transition: $hover
