@@ -187,7 +187,7 @@ var Auth = (function() {
 
     if (result === true) {
       $.ajax({
-          url: '/forgot',
+          url: '/forget',
           type: 'POST',
           dataType: 'json',
           data: data
