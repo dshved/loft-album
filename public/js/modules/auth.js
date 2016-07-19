@@ -99,7 +99,7 @@ var Auth = (function() {
       dataArray = form.serializeArray(),
       email = dataArray[0].value,
       result = _validateLoginForm();
-
+      console.log(data);
     if (result === true) {
       $.ajax({
           url: '/auth',
@@ -110,9 +110,10 @@ var Auth = (function() {
         .fail(function(data) {
           var statusCode = data.status;
           if (statusCode == 200) {
-            localStorage.setItem('photo-album-user-' + email, data.responseText);
+            
+            localStorage.setItem('token', data.responseText);
             form[0].reset();
-            window.location.href = '/user';
+            window.location.href = '/';
           } else if (statusCode > 200) {
             _errorMessage($this, data.responseText);
           }
