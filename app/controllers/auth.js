@@ -36,7 +36,7 @@ router.post('/auth', function (req, res, next) {
           expiresIn: 60
         });
         res.status(200);
-        res.write(token);
+        res.redirect('/')
         res.end();
       }
     })
