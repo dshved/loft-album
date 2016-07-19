@@ -9,6 +9,10 @@ module.exports = function (app) {
   app.use('/', router);
 };
 
+router.get('/forget', function (req, res, next) {
+    res.render('common/_forget');
+});
+
 router.post('/forgot', function (req, res, next) {
   var email = req.body.email;
 
