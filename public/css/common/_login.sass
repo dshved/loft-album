@@ -1,3 +1,52 @@
+.flip__container
+	flex: 1
+	
+.flip
+	width: 550px
+	height: 410px
+	position: absolute
+	top: 0
+	left: 0
+	right: 0
+	bottom: 0
+	margin: auto
+	perspective: 1000px
+
+
+.flip.flipping .flip__back 
+	transform: rotateY(0deg)
+
+
+.flip.flipping .flip__front 
+	transform: rotateY(180deg)
+
+
+.flip__front,
+.flip__back 
+	display: flex
+	flex-direction: column
+	align-items: center
+	transition: 0.9s
+	backface-visibility: hidden
+	transform-style: preserve-3d
+	position: absolute
+	width: 100%
+
+
+.flip__front 
+	z-index: 2;
+	transform: rotateY(0deg)
+
+
+.flip__back 
+	transform: rotateY(-180deg)
+
+.main
+	display: flex
+	flex-direction: column
+	height: 100%
+	min-height: 568px
+
 .login__title
 	display: none
 .title__p
@@ -7,7 +56,7 @@
 	font-size: 16px
 	font-weight: 300
 	line-height: 24px
-	width: 63%
+	// width: 63%
 	margin: auto
 	padding: 10px 0 37px
 
@@ -89,6 +138,7 @@
 	padding: 5px
 
 .btn
+	display: block
 	margin: auto
 	width: 240px
 	height: 40px
