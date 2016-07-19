@@ -26,7 +26,7 @@ block content
 		button.btn.btn__enter(type="submit" name="btn_login" id="login_btn")  Войти
 		.regestration
 			span.text__question Нет аккаунта? 
-			a.form__link(href="#") Зарегистрироваться
+			a.form__link(href="#" id="auth-btn") Зарегистрироваться
 	//- Registration form
 	form.registration__form(id="registration__form" )
 		.input__row
@@ -48,4 +48,4 @@ block content
 		button.btn.btn__creat(type="submit" name="btn_create" id="reg_btn") Создать аккаунт
 		.registration__login
 			span.text__question Уже зарегистрированы? 
-			a.form__link(href="#") Войти
+			a.form__link(href="#" id="signin-btn") Войти
