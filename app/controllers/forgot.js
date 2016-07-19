@@ -3,8 +3,7 @@ var express = require('express'),
   smtpTransport = require('nodemailer-smtp-transport'),
   router = express.Router(),
   mongoose = require('mongoose'),
-  User = mongoose.model('User'),
-  user = require('../models/user')
+  User = mongoose.model('User');
 
 module.exports = function (app) {
   app.use('/', router);
