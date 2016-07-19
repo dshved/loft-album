@@ -9,6 +9,7 @@ var Auth = (function() {
   function _setUpListners() {
     $('#reg_btn').on('click', _setRegistration);
     $('#login_btn').on('click', _setLogin);
+    $('#forget_btn').on('click', _setForget);
   };
 
   var _errorMessage = function(elem, msg) {
@@ -91,15 +92,36 @@ var Auth = (function() {
     return true;
   }
 
+  function _validateForgetForm() {
+    var $this = $(this),
+      form = $('#forget__login'),
+      email = form.find('#forget_mail'),
+      obj = {};
+
+    var validEmail = _isEmail(email.val());
+
+    if (_replaceSpace(email.val())) {
+      obj.valid = false;
+      obj.message = "Вы заполнили не все поля";
+      return obj;
+    }
+    if (!validEmail) {
+      obj.valid = false;
+      obj.message = "Введите корректный Email";
+      return obj;
+    }
+
+    return true;
+  }
+
   var _setLogin = function(e) {
     e.preventDefault();
     var $this = $(this),
       form = $('#login__form'),
       data = form.serialize(),
-      dataArray = form.serializeArray(),
-      email = dataArray[0].value,
+      // dataArray = form.serializeArray(),
+      // email = dataArray[0].value,
       result = _validateLoginForm();
-      console.log(data);
     if (result === true) {
       $.ajax({
           url: '/auth',
@@ -110,7 +132,7 @@ var Auth = (function() {
         .fail(function(data) {
           var statusCode = data.status;
           if (statusCode == 200) {
-            
+
             localStorage.setItem('token', data.responseText);
             form[0].reset();
             window.location.href = '/';
@@ -123,7 +145,7 @@ var Auth = (function() {
       _errorMessage($this, result['message']);
     }
 
-  }
+  };
 
 
   var _setRegistration = function(e) {
@@ -153,6 +175,35 @@ var Auth = (function() {
     } else {
       _errorMessage($this, result['message']);
     }
+  };
+
+  var _setForget = function(e) {
+    e.preventDefault();
+
+    var $this = $(this),
+      form = $('#forget__login'),
+      data = form.serialize(),
+      result = _validateForgetForm();
+
+    if (result === true) {
+      $.ajax({
+          url: '/forgot',
+          type: 'POST',
+          dataType: 'json',
+          data: data
+        })
+        .fail(function(data) {
+          var statusCode = data.status;
+          if (statusCode == 200) {
+            window.location.href = '/';
+          } else if (statusCode > 200) {
+            _errorMessage($this, data.responseText);
+          }
+        });
+
+    } else {
+      _errorMessage($this, result['message']);
+    };
   };
 
   return {
