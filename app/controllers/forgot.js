@@ -25,7 +25,7 @@ router.post('/forget', function (req, res, next) {
           smtpTransport({
             service: 'gmail',
             auth: {
-              mailer: 'loftalbum@gmail.com',
+              user: 'loftalbum@gmail.com',
               pass: 'denys5dev'
             }
           })
