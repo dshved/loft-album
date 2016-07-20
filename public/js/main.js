@@ -1,6 +1,7 @@
 $('.login__form').addClass('load');
 $('.login__title').addClass('load-title');
 
+require('./modules/test');
 // $("#auth-btn").click(function(e) {
 //   e.preventDefault();
 //   $('.login__form').removeClass('load');
