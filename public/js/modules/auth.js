@@ -135,7 +135,7 @@ var Auth = (function() {
 
             localStorage.setItem('token', data.responseText);
             form[0].reset();
-            window.location.href = '/';
+            window.location.href = '/main';
           } else if (statusCode > 200) {
             _errorMessage($this, data.responseText);
           }

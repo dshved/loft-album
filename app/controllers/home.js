@@ -16,3 +16,7 @@ router.get('/', function (req, res, next) {
     });
   });
 });
+
+router.get('/main', function (req, res, next) {
+    res.render('common/_main_page');
+});
