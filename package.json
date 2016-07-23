@@ -5,6 +5,10 @@
   "scripts": {
     "start": "node app.js"
   },
+  "engines": {
+    "node": "4.4.x",
+    "npm": "3.9.x"
+  },
   "dependencies": {
     "body-parser": "^1.13.3",
     "compression": "^1.5.2",
