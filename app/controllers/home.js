@@ -39,9 +39,7 @@ router.get('/main', function (req, res, next) {
           res.render('common/_main_page', {
             name: user.name,
             description: user.description || 'Заполните описание...',
-            avatar: user.avatar,
-            allPhotos: allPhotos,
-            myPhotos: myPhotos
+            avatar: user.avatar
           });
           res.end();
         }
