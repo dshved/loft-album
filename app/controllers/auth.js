@@ -33,7 +33,7 @@ router.post('/auth', function (req, res, next) {
         res.end();
       } else {
         token = jwt.sign(user, 'abcdef', {
-          expiresIn: 60
+          expiresIn: 60*60*24*7
         });
         res.status(200);
         res.send(token);
