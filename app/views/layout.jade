@@ -1,13 +1,12 @@
 doctype html
 html(lang='en')
-  head
-    meta(charset='UTF-8')
-    meta(name='viewport', content='width=device-width')
-    title= title
-    block css
-      link(rel='stylesheet', href='/css/app.css')
-    block js
-      if ENV_DEVELOPMENT
-        script(src='http://localhost:35729/livereload.js')
+  include common/_head
+  
   body
-    block content
+    .wrapper
+      header.header__start
+        block title
+      section.section__start
+        block content
+      footer.footer__start
+        | 2016 Создано командой профессионалов на продвинутом курсе по веб-разработке от LoftSchool
