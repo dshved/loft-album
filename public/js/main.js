@@ -24,3 +24,7 @@ var Flip = (function() {
 })();
 
 Flip.init();
+
+
+var editPupup = require('./modules/edit-popup.js');
+editPupup.init();
