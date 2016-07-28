@@ -1,7 +1,9 @@
 $('.login__form').addClass('load');
 $('.login__title').addClass('load-title');
 
-require('./modules/test');
+var auth = require('./modules/auth.js');
+require('./modules/test.js');
+console.log(auth);
 // $("#auth-btn").click(function(e) {
 //   e.preventDefault();
 //   $('.login__form').removeClass('load');

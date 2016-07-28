@@ -24,7 +24,8 @@ $.gulp.task('default', $.gulp.series(
 	'sass',
     'nodemon',
 	$.gulp.parallel(
-		'js.lint'
+		'js.lint',
+		'js.process'
 		),
 	$.gulp.parallel(
 		'watch',

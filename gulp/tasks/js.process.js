@@ -8,7 +8,6 @@ module.exports = function() {
       .pipe($.gp.webpack({
         entry: $.path.app,
         output: {
-          path: '/build/assets/js',
           filename: 'app.js'
         },
         devtool: 'cheap-source-map',
@@ -23,6 +22,6 @@ module.exports = function() {
           ]
         }
       }))
-      .pipe($.gulp.dest($.config.root + '/assets/js'));
+      .pipe($.gulp.dest('./public/js'));
   });
 };
