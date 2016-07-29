@@ -68,3 +68,7 @@ promise.then(function(xhr){
 }, function () {
   alert("json not found");
 });
+
+
+var editPupup = require('./modules/edit-popup.js');
+editPupup.init();
