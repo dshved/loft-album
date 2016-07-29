@@ -21,6 +21,7 @@
     "jsonwebtoken": "^7.1.6",
     "method-override": "^2.3.0",
     "mongoose": "^4.1.2",
+    "multiparty": "^4.1.2",
     "morgan": "^1.6.1",
     "nodemailer": "^2.5.0",
     "nodemailer-smtp-transport": "^2.6.0",
