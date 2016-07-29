@@ -1,4 +1,17 @@
 /* Container style */
+.modal__edit
+	display: flex
+	background-color: rgba(#000, .8)
+	width: 100%
+	height: 100%
+	position: absolute
+	top: 0
+	left: 0
+	right: 0
+	bottom: 0
+	display: none
+.edit__wrapper
+	margin: auto
 .modal__window_popup
 .edit__profile
 	display: flex
@@ -49,9 +62,9 @@
 
 .btn_modal
 	cursor: pointer
-	border: none
-	background-color: $btn_bg
-	color: $btn_color
+	border: $btn-blue_border
+	background-color: $btn-blue_background-color
+	color: $btn-blue_color
 	padding: 10px 20px
 	border-radius: 30px
 	font-family: Panton
@@ -62,22 +75,24 @@
 	margin-right: 15px
 	max-height: 40px
 	&:hover
-		background-color: $btn_bg_hover
+		background-color: $btn-blue_background-color-hover
 		transition: $hover
 
 .btn_cancel
 	cursor: pointer
 	border: none
 	background: inherit
-	color: $btn_bg
+	color: $btn-primary_color
 	font-family: ProximaNova
 	font-size: 16px
 	font-weight: 600
 	line-height: 21px
 	transition: $hover
 	&:hover
-		color: $btn_bg_hover
+		color: $btn-primary_color
 		transition: $hover
+	&:focus
+		outline: none
 
 .btn__upload
 	padding: 10px 20px
@@ -85,15 +100,15 @@
 	font-size: 14px
 	font-weight: 700
 	line-height: 21px
-	color: $upload_color
-	border: $upload_border
-	background-color: $upload_bg
+	color: $btn-primary_color
+	border: $btn-primary_border
+	background-color: inherit
 	cursor: pointer
 	border-radius: 25px
 	transition: $hover
 	&:hover
-		color: $upload_color_hover
-		background-color: $upload_bg_hover
+		color: $btn-primary_color-hover
+		background-color: $btn-primary_background-color-hover
 		transition: $hover
 
 .upload
@@ -184,7 +199,6 @@
 	line-height: 21px
 	text-align: right
 .textarea
-	// width: 80%
 	height: 120px
 	margin-left: 20px
 	border: none

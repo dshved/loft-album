@@ -1,4 +1,17 @@
-.add__album
+.modal__add-album
+	background-color: rgba(#000, .8)
+	position: fixed
+	width: 100%
+	height: 100%
+	top: 0
+	left: 0
+	right: 0
+	bottom: 0
+	display: flex
+	display: none
+.add-album__wrapper
+	margin: auto
+.add-album
 	width: 690px
 	border-radius: 5px
 	overflow: hidden
@@ -11,8 +24,8 @@
 	margin-left: auto
 	cursor: pointer
 	border: none
-	background-color: $btn_bg_error
-	color: $btn_color_error
+	background-color: $btn-warning_background-color
+	color: $btn-warning_color
 	padding: 10px 20px
 	border-radius: 30px
 	font-family: Panton
@@ -27,7 +40,7 @@
 	justify-content: flex-end
 	align-items: center
 	&:hover
-		background-color: darken($btn_bg_error, 10%)
+		background-color: $btn-warning_background-color-hover
 		transition: $hover
 
 .svg__icon_delete

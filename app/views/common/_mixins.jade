@@ -8,3 +8,15 @@ mixin social (className, items)
 						svg.svg__icon_social
 							use(xmlns:xlink="http://www.w3.org/1999/xlink", xlink:href= "/sprites/svg/symbol/bg-sprite.svg#icon-#{cont[0]}")
 						span.social-span= cont[2]
+
+
+//- comments
+mixin comments (src, name, comment)
+	li.comments__item
+		.comments
+			.comment__author-photo
+				.photo__frame
+					img.author-photo(src="#{src}", alt="author")
+			.comment
+				h2.author-name=name
+				p.comment-text=comment
