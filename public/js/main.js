@@ -3,9 +3,6 @@ auth.init();
 
 var flip = require('./modules/flip.js');
 flip.init();
-var auth = require('./modules/auth.js');
-require('./modules/test.js');
-console.log(auth);
 // $("#auth-btn").click(function(e) {
 //   e.preventDefault();
 //   $('.login__form').removeClass('load');
@@ -30,26 +27,26 @@ addAlbum.init();
 
 // });
 
-var Flip = (function() {
-  function init() {
-    _setUpListners();
-  };
+// var Flip = (function() {
+//   function init() {
+//     _setUpListners();
+//   };
 
-  function _setUpListners() {
-    $('#auth-btn').on('click', _formFlip);
-    $('#signin-btn').on('click', _formFlip);
-  };
+//   function _setUpListners() {
+//     $('#auth-btn').on('click', _formFlip);
+//     $('#signin-btn').on('click', _formFlip);
+//   };
 
-  var _formFlip = function(e){
-    e.preventDefault();
-    var flip = $('.flip');
-    flip.toggleClass('flipping');
-  };
+//   var _formFlip = function(e){
+//     e.preventDefault();
+//     var flip = $('.flip');
+//     flip.toggleClass('flipping');
+//   };
 
-  return {
-    init: init
-  };
+//   return {
+//     init: init
+//   };
 
-})();
+// })();
 
-Flip.init();
+// Flip.init();

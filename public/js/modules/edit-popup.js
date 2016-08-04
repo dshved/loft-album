@@ -1,6 +1,5 @@
 'use strict';
 var Handlebars = require('handlebars');
-// var $ =  require('jquery');
 
 function init() {
   _setUpListners();
