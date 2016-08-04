@@ -5267,8 +5267,8 @@
 	};
 
 	function _setUpListners() {
-	  $('#add_album').on('click', _showModal);
-
+	  $('#add_album').on('click', _showModalAdd);
+	  $('.edit-albums').on('click', _showModalEdit);
 	  $('.modal__add-album').on('click', '#btn_close_modal', _closeModal);
 	  $('.modal__add-album').on('click', '#btn_cancel_modal', _closeModal);
 	  $('.modal__add-album').on('change', '#upload_bg', _previewFileBg);
@@ -5311,14 +5311,38 @@
 	  return d.promise();
 	};
 
-	var _showModal = function _showModal(e) {
+	var _showModalAdd = function _showModalAdd(e) {
 	  e.preventDefault();
 	  $('.modal__add-album').removeClass('close');
 	  var deff = _showTemplate('templates/add-albums.hbs');
 	  deff.then(function (template) {
 	    $('.modal__add-album').html(template({
+	      modal_title: 'Добавить альбом',
 	      user_name: $('.author__name').text(),
-	      user_about: $('.author__about').text()
+	      user_about: $('.author__about').text(),
+	      type_modal: 'add'
+	    }));
+	  });
+	};
+
+	var _showModalEdit = function _showModalEdit(e) {
+	  e.preventDefault();
+	  var thisAlbum = $(e.target).closest('.albums_item'),
+	      album_name = thisAlbum.find('.albums_desc').text(),
+	      album_desc = thisAlbum.find('img').attr('alt'),
+	      album_img = thisAlbum.find('img').attr('src'),
+	      album_id = thisAlbum.find('.edit-albums').data('album-id');
+	  album_id = album_id.replace('"', '').replace('"', '');
+	  $('.modal__add-album').removeClass('close');
+	  var deff = _showTemplate('templates/add-albums.hbs');
+	  deff.then(function (template) {
+	    $('.modal__add-album').html(template({
+	      modal_title: 'Редактировать альбом',
+	      album_name: album_name,
+	      album_desc: album_desc,
+	      album_img: album_img,
+	      type_modal: 'edit',
+	      album_id: album_id
 	    }));
 	  });
 	};

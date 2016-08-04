@@ -2,7 +2,7 @@
   <div class="add-album">
     <div class="modal__header">
       <div class="header__title">
-        <h2 class="modal__title">Добавить альбом</h2>
+        <h2 class="modal__title">{{modal_title}}</h2>
       </div>
       <button value="" class="btn_close" id="btn_close_modal">
         <svg class="svg__icon_close">
@@ -13,17 +13,19 @@
     <div class="modal__form">
       <form action="/addalbum" id="popup__add_album" class="form__add-album" method="post" enctype="multipart/form-data">
         <div class="form__row">
+          <input type="text" value="{{type_modal}}" name="type_modal" style="display: none;">
+          <input type="text" value="{{album_id}}" name="album_id" style="display: none;">
           <label for="album_name" class="label">Название</label>
-          <input type="text" name="album_name" id="album_name" class="input">
+          <input type="text" value="{{album_name}}" name="album_name" id="album_name" class="input">
         </div>
         <div class="form__row">
           <label for="album_description" class="label">Описание</label>
-          <textarea name="album_description" id="album_description" class="textarea"></textarea>
+          <textarea name="album_description" id="album_description" class="textarea">{{album_desc}}</textarea>
         </div>
         <div class="form__row">
           <div class="modal__preview-container">
             <div class="modal__preview_img">
-              <img src="/img/bg_main.jpg" alt="" class="modal__img modal__img-bg">
+              <img src="{{album_img}}" alt="" class="modal__img modal__img-bg">
             </div>
           </div>
           <label class="btn__upload">Загрузить обложку

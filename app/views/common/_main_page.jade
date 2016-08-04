@@ -47,7 +47,7 @@ block content
 						.albums_img
 							img(src= photo.cover, alt=photo.description)
 						.albums_edit
-							a(href="#")
+							a(href="#" data-album-id= photo._id).edit-albums
 								svg.svg__icon_controls
 									use(xmlns:xlink="http://www.w3.org/1999/xlink", xlink:href= "/sprites/svg/symbol/bg-sprite.svg#icon-edit")
 							.albums_desc= photo.title
