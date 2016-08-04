@@ -20,6 +20,12 @@ var userSchema = new Schema({
   salt: {
     type: String,
     required: true
+  },
+  description: {
+    type: String
+  },
+  avatar: {
+    type: String
   }
 });
 

@@ -18,7 +18,7 @@ var config = {
       name: 'loft-album'
     },
     port: process.env.PORT || 3000,
-    db: 'mongodb://localhost/loft-album-test'
+    db: 'mongodb://loft:test@ds029051.mlab.com:29051/loft'
   },
 
   production: {
@@ -27,7 +27,7 @@ var config = {
       name: 'loft-album'
     },
     port: process.env.PORT || 3000,
-    db: 'mongodb://localhost/loft-album-production'
+    db: 'mongodb://loft:test@ds029051.mlab.com:29051/loft'
   }
 };
 

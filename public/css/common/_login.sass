@@ -47,12 +47,11 @@
 	height: 100%
 	min-height: 568px
 
-.login__title
-	display: none
+
 .title__p
 	color: #fff
 	text-align: center
-	// font-family: ProximaNova
+	font-family: ProximaNova
 	font-size: 16px
 	font-weight: 300
 	line-height: 24px
@@ -61,13 +60,12 @@
 	padding: 10px 0 37px
 
 .login__form
-	display: none
 	flex-flow: column
 	min-width: 280px
 	background-color: #fff
 	border-radius: 20px
 	overflow: hidden
-	// display: none
+
 
 .login__form > input[name="email"]
 	border-radius: 25px 25px 0 0px
@@ -76,7 +74,7 @@
 	display: flex
 	flex-flow: row-reverse
 	justify-content: flex-end
-	border-bottom: 1px solid $btn_border
+	border-bottom: 1px solid $border-color
 
 .form__field
 	border: none
@@ -123,13 +121,13 @@
 
 .error_text
 	color: #323232
-	// font-family: ProximaNova
+	font-family: ProximaNova
 	font-size: 14px
 	font-weight: 600
 	line-height: 16px
 
 .text__question
-	// font-family: ProximaNova
+	font-family: ProximaNova
 	font-size: 14px
 	line-height: 24px
 	opacity: .8
@@ -137,23 +135,23 @@
 	font-weight: 300
 	padding: 5px
 
-.btn
+.btn__blue
 	display: block
 	margin: auto
 	width: 240px
 	height: 40px
-	background-color: $btn_bg
-	border: 1px solid $btn_bg
+	background-color: $btn-blue_background-color
+	border: $btn-blue_border
 	border-radius: 25px
-	color: $btn_color
-	// font-family: Panton
+	color: $btn-blue_color
+	font-family: Panton
 	font-size: 14px
 	font-weight: 700
 	line-height: 21px
 	cursor: pointer
 	transition: $hover
 	&:hover
-		background-color: $btn_bg_hover
+		background-color: $btn-blue_background-color-hover
 		transition: $hover
 
 .load

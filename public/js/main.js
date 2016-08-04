@@ -1,6 +1,8 @@
-$('.login__form').addClass('load');
-$('.login__title').addClass('load-title');
+var auth = require('./modules/auth.js');
+auth.init();
 
+var flip = require('./modules/flip.js');
+flip.init();
 var auth = require('./modules/auth.js');
 require('./modules/test.js');
 console.log(auth);
@@ -12,14 +14,11 @@ console.log(auth);
 //   $('.registration__title').addClass('load-title');
 // });
 
-// $("#signin-btn").click(function(e) {
-//   e.preventDefault();
-//   $('.login__form').addClass('load');
-//   $('.login__title').addClass('load-title');
-//   $('.registration__form').removeClass('load');
-//   $('.registration__title').removeClass('load-title');
-// });
+var editPupup = require('./modules/edit-popup.js');
+editPupup.init();
 
+var addAlbum = require('./modules/album-popup.js');
+addAlbum.init();
 // var flip = document.getElementsByClassName('flip');
 // var elem = flip[0];
 // elem.addEventListener('click', function(e) {

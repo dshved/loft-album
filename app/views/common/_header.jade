@@ -1,13 +1,26 @@
-header.header
-	.header__author
-		img.author__photo(src="assets/img/author.png", alt="Author Photo")
-		h2.author__name Антон Черепов
-	.header__description
-		h1.description__title Лесные прогулки
-		p.description__content
-			| Фотографии природы леса, енотов и оленей. Как прекрасно сойти на дальней станции и пройтись по полю босиком. И чтобы никто не беспокоил бродить влюбленным в тишину. 
-			br 
-			|Запах мёда, лесных оленей и енотов будоражит нутро.
-	.header__settings
-		a(href="#")
-		a(href="#")
+header.header__cover
+	.header__author-panel
+		.author__photo-container
+			.author__photo-frame
+				img.author__photo(src= user.avatar || '/img/default_avatar.jpg', alt= user.name || 'asdfasdf')
+		.author__information-container
+			h1.author__name= user.name || 'Ваше имя'
+			p.author__about= user.description || 'Заполните описание...'
+			+social('socials', [['soc_vk', 'https://vk.com', 'Вконтакте'], ['soc_fb', 'https://facebook.com', 'Facebook'], ['soc_twitter', 'https://twitter.com', 'twitter'], ['social_google', 'https://google.com', 'G+'], ['soc_email', '#', 'Mail']])
+		.author__controls
+			ul.control__list
+				li.control__item
+					a.control__link(href="#" id="edit")
+						svg.svg__icon_controls
+							use(xmlns:xlink="http://www.w3.org/1999/xlink", xlink:href= "/sprites/svg/symbol/bg-sprite.svg#icon-edit")
+				li.control__item
+					a.control__link(href="#" id="logout")
+						svg.svg__icon_controls
+							use(xmlns:xlink="http://www.w3.org/1999/xlink", xlink:href= "/sprites/svg/symbol/bg-sprite.svg#icon-off")
+	.header__search-panel
+		form.form__search(action="")
+			input.search__form(type="search" id="search_form" name="search" placeholder="Исследовать мир" )
+			label.label__search(for="search_form")
+				svg.svg__icon_search
+					use(xmlns:xlink="http://www.w3.org/1999/xlink", xlink:href= "/sprites/svg/symbol/bg-sprite.svg#icon-search")
+	.modal__window_popup.close

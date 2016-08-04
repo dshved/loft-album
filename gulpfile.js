@@ -20,7 +20,7 @@ $.path.task.forEach(function(taskPath) {
 });
 
 $.gulp.task('default', $.gulp.series(
-	// 'sprites_svg',
+	'sprites_svg',
 	'sass',
     'nodemon',
 	$.gulp.parallel(
