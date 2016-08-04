@@ -9,6 +9,7 @@ function init() {
 function _setUpListners() {
   $('#add_album').on('click', _showModalAdd);
   $('.edit-albums').on('click', _showModalEdit);
+  $('.get-albums').on('click', _showAlbums);
   $('.modal__add-album').on('click','#btn_close_modal', _closeModal);
   $('.modal__add-album').on('click','#btn_cancel_modal', _closeModal);
   $('.modal__add-album').on('change', '#upload_bg' ,  _previewFileBg);
@@ -106,6 +107,18 @@ var _previewFileBg = function () {
   } else {
     preview.src = "";
   }
+};
+
+var _showAlbums = function(e) {
+  // e.preventDefault();
+  var thisAlbum = $(e.target).closest('.albums_item'),
+    album_id = thisAlbum.find('.edit-albums').data('album-id');
+    album_id = album_id.replace('"', '').replace('"', '');
+  $.ajax({
+    url: '/main/album',
+    type: 'post',
+    data: {album_id: album_id},
+  })  
 };
 
 

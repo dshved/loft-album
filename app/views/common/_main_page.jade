@@ -44,8 +44,9 @@ block content
 			if albums
 				each photo in albums
 					li.albums_item
-						.albums_img
-							img(src= photo.cover, alt=photo.description)
+						a(href="/main/album" data-album-id= photo._id).get-albums
+							.albums_img
+								img(src= photo.cover, alt=photo.description)
 						.albums_edit
 							a(href="#" data-album-id= photo._id).edit-albums
 								svg.svg__icon_controls

@@ -1,0 +1,32 @@
+extends ../album_layout.jade
+include _mixins
+
+block header
+	include _header-album
+block content
+	section.photos
+		.albums_header
+		.photo-list
+			ul.albums_list
+				each photo in photos
+					li.albums_item
+						.albums_img
+							img(src= photo.file, alt="")
+						.albums_edit
+							a(href="#" ).edit-albums
+								svg.svg__icon_controls
+									use(xmlns:xlink="http://www.w3.org/1999/xlink", xlink:href= "/sprites/svg/symbol/bg-sprite.svg#icon-edit")
+							.albums_desc= user.name
+		.modal__slider.close
+
+
+block footer
+	.footer__wrapper
+		.footer__left
+			p.text__left-side Перед вами сервис, который поможет вам организовать свои фотографии в альбомы и поделиться ими со всем миром!
+		.footer__center
+			a.link__up-arrow(href="#")
+				svg.svg__icon_footer
+					use(xmlns:xlink="http://www.w3.org/1999/xlink", xlink:href= "/sprites/svg/symbol/bg-sprite.svg#icon-top")
+		.footer__right
+			p.text__right-side 2016 | Создано командой профессионалов на продвинутом курсепо веб-разработке от LoftSchool
