@@ -8,22 +8,25 @@ module.exports = function (app) {
   app.use('/', router);
 };
 
+function loadUser(req, res, next) {
+  if (req.session.user_id) {
+    User.findById(req.session.user_id, function(user) {
+      if (user) {
+        req.currentUser = user;
+        next();
+      } else {
+        res.redirect('./main');
+      }
+    });
+  } else {
+    res.redirect('./');
+  }
+};
+
 router.post('/auth', function (req, res, next) {
   var email = req.body.email,
     password = req.body.password;
 
-  var token = req.body.token || req.query.token || req.headers['x-access-token'];
-  
-  if (token) {
-    jwt.verify(token, 'abcdef', function(err, decoded) {      
-      if (err) {
-        return next(err);    
-      } else {
-        req.decoded = decoded;    
-        next();
-      }
-    });
-  } else {
     User.findOne( { email: email }, function (err, user) {
       if (err) return next(err);
       
@@ -32,17 +35,10 @@ router.post('/auth', function (req, res, next) {
         res.write('email или пароль неверен');
         res.end();
       } else {
-        token = jwt.sign(user, 'abcdef', {
-          expiresIn: 60*60*24*7
-        });
+        req.session.user_id = user._id;
         res.status(200);
-        res.send(token);
+        res.send('ok');
         res.end();
       }
     })
-  };
 });
-
-
-  
-

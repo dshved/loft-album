@@ -1,4 +1,6 @@
+'use strict';
 var Handlebars = require('handlebars');
+// var $ =  require('jquery');
 
 function init() {
   _setUpListners();
@@ -18,22 +20,19 @@ function _setUpListners() {
 
 var subform = function(e) {
   e.preventDefault();
-  var form = $('#popup__user_edit'),
-    token = localStorage.getItem('token'),
-    data = form.serialize() + '&token=' + token;
+  var form = $('#popup__user_edit');
 
-  $.ajax({
-    url: '/profile',
-    type: 'POST',
-    data: data,
-  })
-  .done(function() {
-    console.log("success");
-  })
-  .fail(function() {
-    console.log("error");
-  })
-  $('.modal__window_popup').addClass('close').empty();
+ $(form).ajaxSubmit({
+    error: function(xhr) {
+      console.log(xhr);
+    },
+    success: function(response) {
+      $('.author__name').text(form.find('#user_name').val());
+      $('.author__about').text(form.find('#user_about').val());
+      $('.author__photo').attr('src', form.find('.modal__img-author').attr('src'));
+    }
+  });
+   $('.modal__window_popup').addClass('close').empty();
 };
 
 
@@ -68,7 +67,8 @@ var _showModal = function(e) {
   deff.then(function(template) {
     $('.modal__window_popup').html(template({
       user_name: $('.author__name').text(),
-      user_about: $('.author__about').text()
+      user_about: $('.author__about').text(),
+      user_ava: $('.author__photo').attr('src')
     }));
   });
 };

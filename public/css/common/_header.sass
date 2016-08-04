@@ -93,7 +93,14 @@
 .control__link
 	margin: auto
 	padding: 10px
-	display: block
+	display: flex
+	align-items: center
+	background-color: white
+	&:hover
+		background-color: $btn-blue_background-color
+	&:hover .svg__icon_controls
+		fill: white
+
 .svg__icon_controls
 	width: 22px
 	height: 22px
@@ -160,9 +167,6 @@
 	width: 420px
 	margin: 58px 48px
 	margin-right: 0	
-.author__name
-	
-.author__about
 
 .socials
 	margin-top: 20px

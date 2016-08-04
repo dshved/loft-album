@@ -53,86 +53,283 @@
 
 	'use strict';
 
-	$('.login__form').addClass('load');
-	$('.login__title').addClass('load-title');
+	var auth = __webpack_require__(2);
+	auth.init();
 
-	var Flip = function () {
-	  function init() {
-	    _setUpListners();
-	  };
+	var flip = __webpack_require__(3);
+	flip.init();
 
-	  function _setUpListners() {
-	    $('#auth-btn').on('click', _formFlip);
-	    $('#signin-btn').on('click', _formFlip);
-	  };
-
-	  var _formFlip = function _formFlip(e) {
-	    e.preventDefault();
-	    var flip = $('.flip');
-	    flip.toggleClass('flipping');
-	  };
-
-	  return {
-	    init: init
-	  };
-	}();
-
-	Flip.init();
-
-	/*Template photo-card*/
-	var promise = new Promise(function (resolve, reject) {
-	  var xhr = new XMLHttpRequest();
-
-	  xhr.open("GET", "work.json", true);
-	  xhr.onloadend = function () {
-
-	    if (xhr.status >= 400) {
-	      alert("соединение не установлено");
-	    } else {
-	      resolve(xhr.responseText);
-	    }
-	  };
-
-	  xhr.send();
-	});
-
-	promise.then(function (xhr) {
-	  function supportsTemplate() {
-	    return 'content' in document.createElement('template');
-	  }
-
-	  if (supportsTemplate()) {
-	    var t = document.querySelector('#mytemplate'); // сам шаблон
-	    var templateBody = document.querySelector('#template'); // куда вставляем
-	    var json = JSON.parse(xhr).photo; // парсим JSON пришедший из Промиса
-
-	    json.forEach(function (item) {
-	      t.content.querySelector('.photo__image').src = item.url; // вставка главного изображения
-	      t.content.querySelector('.photo__avatar').src = item.avatar; // вставка аватара
-	      t.content.querySelector('.photo__content-text').innerText = item.photoText; // вставка описания
-	      t.content.querySelector('.photo__content-comments').innerText = item.comments; // вставка комментариев
-	      t.content.querySelector('.photo__content-like').innerText = item.like; // вставка лайков
-	      t.content.querySelector('.photo__name-album').innerText = item.photoName; // вставка текста подвала
-
-	      templateBody.appendChild(t.content.cloneNode(true));
-	    });
-	  } else {
-	    // для старого подхода
-	  }
-	}, function () {
-	  alert("json not found");
-	});
-
-	var editPupup = __webpack_require__(2);
+	var editPupup = __webpack_require__(4);
 	editPupup.init();
+
+	var addAlbum = __webpack_require__(36);
+	addAlbum.init();
 
 /***/ },
 /* 2 */
+/***/ function(module, exports) {
+
+	'use strict';
+	// var $ =  require('jquery');
+
+	var init = function init() {
+	  _setUpListners();
+	};
+
+	function _setUpListners() {
+	  $('#reg_btn').on('click', _setRegistration);
+	  $('#login_btn').on('click', _setLogin);
+	  $('#forget_btn').on('click', _setForget);
+	  $('#logout').on('click', _setLogout);
+	};
+
+	var _errorMessage = function _errorMessage(element, message) {
+	  var errorBlock = '<div class="form__error"><span class="error_text">' + message + '</span></div>',
+	      TIMEOUT_DELAY = 1000,
+	      SLIDEUP_DURATION = 2000;
+
+	  element.before(errorBlock);
+	  element.prop('disabled', true);
+
+	  setTimeout(function () {
+	    $('.form__error').slideUp(SLIDEUP_DURATION, function () {
+	      $('.form__error').remove();
+	      element.prop('disabled', false);
+	    });
+	  }, TIMEOUT_DELAY);
+	};
+
+	var _isEmail = function _isEmail(email) {
+	  var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+	  return regex.test(email);
+	};
+
+	var _replaceSpace = function _replaceSpace(value) {
+	  var string = value.replace(/[\s{2,}]+/g, ' ');
+
+	  if (string === '' || string === ' ') {
+	    return true;
+	  } else {
+	    return false;
+	  };
+	};
+
+	function _validateRegistrationForm() {
+	  var $this = $(this),
+	      form = $('#registration__form'),
+	      name = form.find('#registration_name'),
+	      email = form.find('#registration_mail'),
+	      password = form.find('#registration_password'),
+	      result = {};
+
+	  var validEmail = _isEmail(email.val());
+
+	  if (_replaceSpace(name.val()) || _replaceSpace(email.val()) || _replaceSpace(password.val())) {
+	    result.valid = false;
+	    result.message = "Вы заполнили не все поля";
+	    return result;
+	  };
+
+	  if (!validEmail) {
+	    result.valid = false;
+	    result.message = "Введите корректный Email";
+	    return result;
+	  };
+
+	  if (password.val().length < 8) {
+	    result.valid = false;
+	    result.message = "Пароль должен быть больше 8 символов";
+	    return result;
+	  };
+
+	  return true;
+	};
+
+	function _validateLoginForm() {
+	  var $this = $(this),
+	      form = $('#login__form'),
+	      email = form.find('#login_mail'),
+	      password = form.find('#login__password'),
+	      result = {};
+
+	  var validEmail = _isEmail(email.val());
+
+	  if (_replaceSpace(email.val()) || _replaceSpace(password.val())) {
+	    result.valid = false;
+	    result.message = "Вы заполнили не все поля";
+	    return result;
+	  };
+
+	  if (!validEmail) {
+	    result.valid = false;
+	    result.message = "Введите корректный Email";
+	    return result;
+	  };
+
+	  return true;
+	};
+
+	function _validateForgetForm() {
+	  var $this = $(this),
+	      form = $('#forget__login'),
+	      email = form.find('#forget_mail'),
+	      result = {};
+
+	  var validEmail = _isEmail(email.val());
+
+	  if (_replaceSpace(email.val())) {
+	    result.valid = false;
+	    result.message = "Вы заполнили не все поля";
+	    return result;
+	  }
+	  if (!validEmail) {
+	    result.valid = false;
+	    result.message = "Введите корректный Email";
+	    return result;
+	  }
+
+	  return true;
+	};
+
+	var _setLogin = function _setLogin(e) {
+	  e.preventDefault();
+
+	  var $this = $(this),
+	      form = $('#login__form'),
+	      data = form.serialize(),
+	      result = _validateLoginForm();
+
+	  if (result === true) {
+	    $.ajax({
+	      url: '/auth',
+	      type: 'POST',
+	      dataType: 'json',
+	      data: data
+	    }).fail(function (data) {
+	      console.log(data);
+	      var statusCode = data.status;
+	      if (statusCode == 200) {
+	        form[0].reset();
+	        window.location.href = '/main';
+	      } else if (statusCode > 200) {
+	        _errorMessage($this, data.responseText);
+	      }
+	    });
+	  } else {
+	    _errorMessage($this, result['message']);
+	  };
+	};
+
+	var _setRegistration = function _setRegistration(e) {
+	  e.preventDefault();
+
+	  var $this = $(this),
+	      form = $('#registration__form'),
+	      data = form.serialize(),
+	      result = _validateRegistrationForm();
+
+	  if (result === true) {
+	    $.ajax({
+	      url: '/registration',
+	      type: 'POST',
+	      dataType: 'json',
+	      data: data
+	    }).fail(function (data) {
+	      var statusCode = data.status;
+	      if (statusCode == 200) {
+	        _errorMessage($this, data.responseText);
+	        form[0].reset();
+	      } else if (statusCode > 200) {
+	        _errorMessage($this, data.responseText);
+	      }
+	    });
+	  } else {
+	    _errorMessage($this, result['message']);
+	  };
+	};
+
+	var _setForget = function _setForget(e) {
+	  e.preventDefault();
+
+	  var $this = $(this),
+	      form = $('#forget__login'),
+	      data = form.serialize(),
+	      result = _validateForgetForm();
+
+	  if (result === true) {
+	    $.ajax({
+	      url: '/forget',
+	      type: 'POST',
+	      dataType: 'json',
+	      data: data
+	    }).fail(function (data) {
+	      var statusCode = data.status;
+	      if (statusCode == 200) {
+	        window.location.href = '/';
+	      } else if (statusCode > 200) {
+	        _errorMessage($this, data.responseText);
+	      }
+	    });
+	  } else {
+	    _errorMessage($this, result['message']);
+	  };
+	};
+
+	var _setLogout = function _setLogout(e) {
+	  e.preventDefault();
+	  $.ajax({
+	    url: '/logout',
+	    type: 'GET'
+	  }).done(function (data) {
+	    if (data == 'ok') {
+	      window.location.href = '/';
+	    }
+	  });
+	};
+
+	module.exports = {
+	  init: init
+	};
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	'use strict';
+	// var $ =  require('jquery');
+
+	function init() {
+	  _setUpListners();
+	};
+
+	function _setUpListners() {
+	  $('#auth-btn').on('click', _formFlip);
+	  $('#signin-btn').on('click', _formFlip);
+	};
+
+	var _formFlip = function _formFlip(e) {
+	  e.preventDefault();
+	  var flip = $('.flip');
+	  flip.toggleClass('flipping');
+	  var login_form = $('#login__form');
+	  var reg_form = $('#registration__form');
+	  login_form[0].reset();
+	  reg_form[0].reset();
+	};
+
+	module.exports = {
+	  init: init
+	};
+
+/***/ },
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Handlebars = __webpack_require__(3);
+	var Handlebars = __webpack_require__(5);
+	// var $ =  require('jquery');
 
 	function init() {
 	  _setUpListners();
@@ -152,18 +349,17 @@
 
 	var subform = function subform(e) {
 	  e.preventDefault();
-	  var form = $('#popup__user_edit'),
-	      token = localStorage.getItem('token'),
-	      data = form.serialize() + '&token=' + token;
+	  var form = $('#popup__user_edit');
 
-	  $.ajax({
-	    url: '/profile',
-	    type: 'POST',
-	    data: data
-	  }).done(function () {
-	    console.log("success");
-	  }).fail(function () {
-	    console.log("error");
+	  $(form).ajaxSubmit({
+	    error: function error(xhr) {
+	      console.log(xhr);
+	    },
+	    success: function success(response) {
+	      $('.author__name').text(form.find('#user_name').val());
+	      $('.author__about').text(form.find('#user_about').val());
+	      $('.author__photo').attr('src', form.find('.modal__img-author').attr('src'));
+	    }
 	  });
 	  $('.modal__window_popup').addClass('close').empty();
 	};
@@ -196,7 +392,8 @@
 	  deff.then(function (template) {
 	    $('.modal__window_popup').html(template({
 	      user_name: $('.author__name').text(),
-	      user_about: $('.author__about').text()
+	      user_about: $('.author__about').text(),
+	      user_ava: $('.author__photo').attr('src')
 	    }));
 	  });
 	};
@@ -238,7 +435,7 @@
 	};
 
 /***/ },
-/* 3 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -249,9 +446,9 @@
 
 	// var local = handlebars.create();
 
-	var handlebars = __webpack_require__(4)['default'];
+	var handlebars = __webpack_require__(6)['default'];
 
-	var printer = __webpack_require__(32);
+	var printer = __webpack_require__(34);
 	handlebars.PrintVisitor = printer.PrintVisitor;
 	handlebars.print = printer.print;
 
@@ -259,7 +456,7 @@
 
 	// Publish a Node.js require() handler for .handlebars and .hbs files
 	function extension(module, filename) {
-	  var fs = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"fs\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	  var fs = __webpack_require__(35);
 	  var templateString = fs.readFileSync(filename, 'utf8');
 	  module.exports = handlebars.compile(templateString);
 	}
@@ -270,7 +467,7 @@
 	}
 
 /***/ },
-/* 4 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -282,29 +479,29 @@
 	  return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _handlebarsRuntime = __webpack_require__(5);
+	var _handlebarsRuntime = __webpack_require__(7);
 
 	var _handlebarsRuntime2 = _interopRequireDefault(_handlebarsRuntime);
 
 	// Compiler imports
 
-	var _handlebarsCompilerAst = __webpack_require__(23);
+	var _handlebarsCompilerAst = __webpack_require__(25);
 
 	var _handlebarsCompilerAst2 = _interopRequireDefault(_handlebarsCompilerAst);
 
-	var _handlebarsCompilerBase = __webpack_require__(24);
+	var _handlebarsCompilerBase = __webpack_require__(26);
 
-	var _handlebarsCompilerCompiler = __webpack_require__(29);
+	var _handlebarsCompilerCompiler = __webpack_require__(31);
 
-	var _handlebarsCompilerJavascriptCompiler = __webpack_require__(30);
+	var _handlebarsCompilerJavascriptCompiler = __webpack_require__(32);
 
 	var _handlebarsCompilerJavascriptCompiler2 = _interopRequireDefault(_handlebarsCompilerJavascriptCompiler);
 
-	var _handlebarsCompilerVisitor = __webpack_require__(27);
+	var _handlebarsCompilerVisitor = __webpack_require__(29);
 
 	var _handlebarsCompilerVisitor2 = _interopRequireDefault(_handlebarsCompilerVisitor);
 
-	var _handlebarsNoConflict = __webpack_require__(22);
+	var _handlebarsNoConflict = __webpack_require__(24);
 
 	var _handlebarsNoConflict2 = _interopRequireDefault(_handlebarsNoConflict);
 
@@ -341,7 +538,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 5 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -367,30 +564,30 @@
 	  }
 	}
 
-	var _handlebarsBase = __webpack_require__(6);
+	var _handlebarsBase = __webpack_require__(8);
 
 	var base = _interopRequireWildcard(_handlebarsBase);
 
 	// Each of these augment the Handlebars object. No need to setup here.
 	// (This is done to easily share code between commonjs and browse envs)
 
-	var _handlebarsSafeString = __webpack_require__(20);
+	var _handlebarsSafeString = __webpack_require__(22);
 
 	var _handlebarsSafeString2 = _interopRequireDefault(_handlebarsSafeString);
 
-	var _handlebarsException = __webpack_require__(8);
+	var _handlebarsException = __webpack_require__(10);
 
 	var _handlebarsException2 = _interopRequireDefault(_handlebarsException);
 
-	var _handlebarsUtils = __webpack_require__(7);
+	var _handlebarsUtils = __webpack_require__(9);
 
 	var Utils = _interopRequireWildcard(_handlebarsUtils);
 
-	var _handlebarsRuntime = __webpack_require__(21);
+	var _handlebarsRuntime = __webpack_require__(23);
 
 	var runtime = _interopRequireWildcard(_handlebarsRuntime);
 
-	var _handlebarsNoConflict = __webpack_require__(22);
+	var _handlebarsNoConflict = __webpack_require__(24);
 
 	var _handlebarsNoConflict2 = _interopRequireDefault(_handlebarsNoConflict);
 
@@ -423,7 +620,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 6 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -436,17 +633,17 @@
 	  return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _utils = __webpack_require__(7);
+	var _utils = __webpack_require__(9);
 
-	var _exception = __webpack_require__(8);
+	var _exception = __webpack_require__(10);
 
 	var _exception2 = _interopRequireDefault(_exception);
 
-	var _helpers = __webpack_require__(9);
+	var _helpers = __webpack_require__(11);
 
-	var _decorators = __webpack_require__(17);
+	var _decorators = __webpack_require__(19);
 
-	var _logger = __webpack_require__(19);
+	var _logger = __webpack_require__(21);
 
 	var _logger2 = _interopRequireDefault(_logger);
 
@@ -533,7 +730,7 @@
 	exports.logger = _logger2['default'];
 
 /***/ },
-/* 7 */
+/* 9 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -663,7 +860,7 @@
 	}
 
 /***/ },
-/* 8 */
+/* 10 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -707,7 +904,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 9 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -720,31 +917,31 @@
 	  return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _helpersBlockHelperMissing = __webpack_require__(10);
+	var _helpersBlockHelperMissing = __webpack_require__(12);
 
 	var _helpersBlockHelperMissing2 = _interopRequireDefault(_helpersBlockHelperMissing);
 
-	var _helpersEach = __webpack_require__(11);
+	var _helpersEach = __webpack_require__(13);
 
 	var _helpersEach2 = _interopRequireDefault(_helpersEach);
 
-	var _helpersHelperMissing = __webpack_require__(12);
+	var _helpersHelperMissing = __webpack_require__(14);
 
 	var _helpersHelperMissing2 = _interopRequireDefault(_helpersHelperMissing);
 
-	var _helpersIf = __webpack_require__(13);
+	var _helpersIf = __webpack_require__(15);
 
 	var _helpersIf2 = _interopRequireDefault(_helpersIf);
 
-	var _helpersLog = __webpack_require__(14);
+	var _helpersLog = __webpack_require__(16);
 
 	var _helpersLog2 = _interopRequireDefault(_helpersLog);
 
-	var _helpersLookup = __webpack_require__(15);
+	var _helpersLookup = __webpack_require__(17);
 
 	var _helpersLookup2 = _interopRequireDefault(_helpersLookup);
 
-	var _helpersWith = __webpack_require__(16);
+	var _helpersWith = __webpack_require__(18);
 
 	var _helpersWith2 = _interopRequireDefault(_helpersWith);
 
@@ -759,14 +956,14 @@
 	}
 
 /***/ },
-/* 10 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _utils = __webpack_require__(7);
+	var _utils = __webpack_require__(9);
 
 	exports['default'] = function (instance) {
 	  instance.registerHelper('blockHelperMissing', function (context, options) {
@@ -802,7 +999,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 11 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -816,9 +1013,9 @@
 	  return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _utils = __webpack_require__(7);
+	var _utils = __webpack_require__(9);
 
-	var _exception = __webpack_require__(8);
+	var _exception = __webpack_require__(10);
 
 	var _exception2 = _interopRequireDefault(_exception);
 
@@ -904,7 +1101,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 12 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -916,7 +1113,7 @@
 	  return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _exception = __webpack_require__(8);
+	var _exception = __webpack_require__(10);
 
 	var _exception2 = _interopRequireDefault(_exception);
 
@@ -935,14 +1132,14 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 13 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _utils = __webpack_require__(7);
+	var _utils = __webpack_require__(9);
 
 	exports['default'] = function (instance) {
 	  instance.registerHelper('if', function (conditional, options) {
@@ -968,7 +1165,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 14 */
+/* 16 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -998,7 +1195,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 15 */
+/* 17 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1014,14 +1211,14 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 16 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _utils = __webpack_require__(7);
+	var _utils = __webpack_require__(9);
 
 	exports['default'] = function (instance) {
 	  instance.registerHelper('with', function (context, options) {
@@ -1051,7 +1248,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 17 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1064,7 +1261,7 @@
 	  return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _decoratorsInline = __webpack_require__(18);
+	var _decoratorsInline = __webpack_require__(20);
 
 	var _decoratorsInline2 = _interopRequireDefault(_decoratorsInline);
 
@@ -1073,14 +1270,14 @@
 	}
 
 /***/ },
-/* 18 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _utils = __webpack_require__(7);
+	var _utils = __webpack_require__(9);
 
 	exports['default'] = function (instance) {
 	  instance.registerDecorator('inline', function (fn, props, container, options) {
@@ -1106,14 +1303,14 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 19 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _utils = __webpack_require__(7);
+	var _utils = __webpack_require__(9);
 
 	var logger = {
 	  methodMap: ['debug', 'info', 'warn', 'error'],
@@ -1157,7 +1354,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 20 */
+/* 22 */
 /***/ function(module, exports) {
 
 	// Build out our basic SafeString type
@@ -1176,7 +1373,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 21 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1210,15 +1407,15 @@
 	  }
 	}
 
-	var _utils = __webpack_require__(7);
+	var _utils = __webpack_require__(9);
 
 	var Utils = _interopRequireWildcard(_utils);
 
-	var _exception = __webpack_require__(8);
+	var _exception = __webpack_require__(10);
 
 	var _exception2 = _interopRequireDefault(_exception);
 
-	var _base = __webpack_require__(6);
+	var _base = __webpack_require__(8);
 
 	function checkRevision(compilerInfo) {
 	  var compilerRevision = compilerInfo && compilerInfo[0] || 1,
@@ -1486,7 +1683,7 @@
 	}
 
 /***/ },
-/* 22 */
+/* 24 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/* global window */
@@ -1511,7 +1708,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 23 */
+/* 25 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1546,7 +1743,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 24 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1573,19 +1770,19 @@
 	  return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _parser = __webpack_require__(25);
+	var _parser = __webpack_require__(27);
 
 	var _parser2 = _interopRequireDefault(_parser);
 
-	var _whitespaceControl = __webpack_require__(26);
+	var _whitespaceControl = __webpack_require__(28);
 
 	var _whitespaceControl2 = _interopRequireDefault(_whitespaceControl);
 
-	var _helpers = __webpack_require__(28);
+	var _helpers = __webpack_require__(30);
 
 	var Helpers = _interopRequireWildcard(_helpers);
 
-	var _utils = __webpack_require__(7);
+	var _utils = __webpack_require__(9);
 
 	exports.parser = _parser2['default'];
 
@@ -1610,7 +1807,7 @@
 	}
 
 /***/ },
-/* 25 */
+/* 27 */
 /***/ function(module, exports) {
 
 	/* istanbul ignore next */
@@ -2353,7 +2550,7 @@
 	exports['default'] = handlebars;
 
 /***/ },
-/* 26 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2365,7 +2562,7 @@
 	  return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _visitor = __webpack_require__(27);
+	var _visitor = __webpack_require__(29);
 
 	var _visitor2 = _interopRequireDefault(_visitor);
 
@@ -2580,7 +2777,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 27 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2592,7 +2789,7 @@
 	  return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _exception = __webpack_require__(8);
+	var _exception = __webpack_require__(10);
 
 	var _exception2 = _interopRequireDefault(_exception);
 
@@ -2726,7 +2923,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 28 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2748,7 +2945,7 @@
 	  return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _exception = __webpack_require__(8);
+	var _exception = __webpack_require__(10);
 
 	var _exception2 = _interopRequireDefault(_exception);
 
@@ -2963,7 +3160,7 @@
 	}
 
 /***/ },
-/* 29 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* eslint-disable new-cap */
@@ -2980,13 +3177,13 @@
 	  return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _exception = __webpack_require__(8);
+	var _exception = __webpack_require__(10);
 
 	var _exception2 = _interopRequireDefault(_exception);
 
-	var _utils = __webpack_require__(7);
+	var _utils = __webpack_require__(9);
 
-	var _ast = __webpack_require__(23);
+	var _ast = __webpack_require__(25);
 
 	var _ast2 = _interopRequireDefault(_ast);
 
@@ -3542,7 +3739,7 @@
 	}
 
 /***/ },
-/* 30 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -3554,15 +3751,15 @@
 	  return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _base = __webpack_require__(6);
+	var _base = __webpack_require__(8);
 
-	var _exception = __webpack_require__(8);
+	var _exception = __webpack_require__(10);
 
 	var _exception2 = _interopRequireDefault(_exception);
 
-	var _utils = __webpack_require__(7);
+	var _utils = __webpack_require__(9);
 
-	var _codeGen = __webpack_require__(31);
+	var _codeGen = __webpack_require__(33);
 
 	var _codeGen2 = _interopRequireDefault(_codeGen);
 
@@ -4674,7 +4871,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 31 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* global define */
@@ -4682,7 +4879,7 @@
 
 	exports.__esModule = true;
 
-	var _utils = __webpack_require__(7);
+	var _utils = __webpack_require__(9);
 
 	var SourceNode = undefined;
 
@@ -4844,7 +5041,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 32 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* eslint-disable new-cap */
@@ -4859,7 +5056,7 @@
 	  return obj && obj.__esModule ? obj : { 'default': obj };
 	}
 
-	var _visitor = __webpack_require__(27);
+	var _visitor = __webpack_require__(29);
 
 	var _visitor2 = _interopRequireDefault(_visitor);
 
@@ -5034,6 +5231,104 @@
 	  return pair.key + '=' + this.accept(pair.value);
 	};
 	/* eslint-enable new-cap */
+
+/***/ },
+/* 35 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	console.log("I'm `fs` modules");
+
+/***/ },
+/* 36 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Handlebars = __webpack_require__(5);
+	// var $ =  require('jquery');
+
+	function init() {
+	  _setUpListners();
+	};
+
+	function _setUpListners() {
+	  $('#add_album').on('click', _showModal);
+
+	  $('.modal__add-album').on('click', '#btn_close_modal', _closeModal);
+	  $('.modal__add-album').on('click', '#btn_cancel_modal', _closeModal);
+	  $('.modal__add-album').on('change', '#upload_bg', _previewFileBg);
+
+	  $('modal__add-album').on('submit', '#popup__add_album', subform);
+	};
+
+	var subform = function subform(e) {
+	  e.preventDefault();
+	  var form = $('#popup__add_album');
+
+	  $(form).ajaxSubmit({
+	    error: function error(xhr) {
+	      console.log(xhr);
+	    },
+	    success: function success(response) {
+	      console.log(response);
+	    }
+	  });
+	  $('.modal__add-album').addClass('close').empty();
+	};
+
+	var _closeModal = function _closeModal(e) {
+	  e.preventDefault();
+	  $('.modal__add-album').addClass('close').empty();
+	};
+
+	var _showTemplate = function _showTemplate(path) {
+	  var d = $.Deferred(),
+	      template;
+
+	  $.ajax({
+	    url: path,
+	    success: function success(data) {
+	      template = Handlebars.compile(data);
+	      d.resolve(template);
+	    }
+	  });
+
+	  return d.promise();
+	};
+
+	var _showModal = function _showModal(e) {
+	  e.preventDefault();
+	  $('.modal__add-album').removeClass('close');
+	  var deff = _showTemplate('templates/add-albums.hbs');
+	  deff.then(function (template) {
+	    $('.modal__add-album').html(template({
+	      user_name: $('.author__name').text(),
+	      user_about: $('.author__about').text()
+	    }));
+	  });
+	};
+
+	var _previewFileBg = function _previewFileBg() {
+	  var preview = $('.modal__img-bg')[0];
+	  var file = $("#upload_bg")[0].files[0];
+	  var reader = new FileReader();
+
+	  reader.onloadend = function () {
+	    preview.src = reader.result;
+	  };
+
+	  if (file) {
+	    reader.readAsDataURL(file);
+	  } else {
+	    preview.src = "";
+	  }
+	};
+
+	module.exports = {
+	  init: init
+	};
 
 /***/ }
 /******/ ]);

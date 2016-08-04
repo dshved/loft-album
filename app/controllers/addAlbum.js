@@ -1,5 +1,7 @@
 var express = require('express'),
   multiparty = require('multiparty'),
+  util = require('util'),
+  fs = require('fs'),
   jwt = require('jsonwebtoken'),
   router = express.Router(),
   mongoose = require('mongoose'),
@@ -10,50 +12,49 @@ module.exports = function (app) {
   app.use('/', router);
 };
 
-router.post('/addAlbum', function(req, res, next) {
+router.post('/addalbum', function(req, res, next) {
+  var description,
+    title,
+    filePath,
+    user_id = req.session.user_id;
 
-  var token = req.body.token || req.query.token || req.headers['x-access-token'];
-   
-  if (token) {
-    jwt.verify(token, 'abcdef', function(err, decoded) {
-        
-      if (err) {
-        return next(err);    
-      } else {
+  var form = new multiparty.Form();
 
-        var description,
-          title,
-          filePath,
-          email = decoded._doc.email
+  form.parse(req, function(err, fields, files) {
 
-        var form = new multiparty.Form();
+    description = fields.album_description[0];
+    title = fields.album_name[0];
+    filePath = files.upload_bg[0].path;
 
-        form.parse(req, function(err, fields, files) {
-
-          description = fields.description[0];
-          title = fields.title[0];
-          filePath = files.photo[0].path;
-
-        });
-        
-        Album.find({}, function (err, albums) {
+    fs.readFile(filePath, function(err, data) {
+      var radom = Math.random().toString(36);
+      var randomName = radom.substring(2, radom.length);
+      var path = './public/upload/' + randomName + '-' + files.upload_bg[0].originalFilename;
+      fs.writeFile(path, data, function(err) {
+        Album.find({}, function(err, albums) {
           if (err) return next(err);
 
           var newAlbum = new Album({
-            owner: email,
+            owner: user_id,
             title: title,
             description: description,
-            cover: filePath
+            cover: '/upload/' + randomName + '-' + files.upload_bg[0].originalFilename
           });
-          newAlbum.save(function(err) {
-            if (err) {
-              console.log(err);
-            } 
+
+          newAlbum.save(function(err, album) {
+            var newPhoto = new Photo({
+              album: album.id,
+              file: '/upload/' + randomName + '-' + files.upload_bg[0].originalFilename
+            });
+            newPhoto.save();
           });
+
+          res.redirect('/main');
           res.end();
         });
-      };
-    });   
-  }
-}) 
+      });
+
+    });
+  });
+});
 

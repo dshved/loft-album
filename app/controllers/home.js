@@ -5,56 +5,63 @@ var express = require('express'),
   mongoose = require('mongoose'),
   User = mongoose.model('User'),
   Article = mongoose.model('Article'),
+  Photo = mongoose.model('Photo'),
   Album = mongoose.model('Album');
 
-module.exports = function (app) {
+var async = require('async');
+
+module.exports = function(app) {
   app.use('/', router);
 };
 
-router.get('/', function (req, res, next) {
-  Article.find(function (err, articles) {
+function requireLogin(req, res, next) {
+  if (!req.session.user_id) {
+    res.redirect('/');
+    res.end();
+  } else {
+    next();
+  }
+};
+
+router.get('/', function(req, res, next) {
+  res.render('index');
+});
+
+router.get('/main', requireLogin, function(req, res, next) {
+  var data = {};
+
+  async.parallel([
+    function(cb) {
+      Photo.find({}, null, { sort: { _id: -1 } }, function(err, photos) {
+        if (photos.length > 0) {
+          data['photos'] = photos;
+        };
+        cb();
+      });
+    },
+    function(cb) {
+      Album.find({ 'owner': req.session.user_id }, function(err, albums) {
+        if (albums.length > 0) {
+          data['albums'] = albums;
+        };
+        cb();
+      });
+    },
+    function(cb) {
+      User.findOne({ _id: req.session.user_id }, function(err, user) {
+        if (err) return next(err);
+        data['user'] = user;
+        cb();
+      });
+    },
+  ], function(err) {
     if (err) return next(err);
-    res.render('index', {
-      title: 'Generator-Express MVC',
-      articles: articles
-    });
+    res.render('common/_main_page', data);
+    res.end();
   });
 });
 
-router.get('/main', function (req, res, next) {
-    res.render('common/_main_page');
+router.get('/logout', function(req, res) {
+  req.session.destroy();
+  res.send('ok');
 });
-
-// router.get('/main', function (req, res, next) {
-
-//   var token = req.body.token || req.query.token || req.headers['x-access-token'];
-  
-//   //если токен есть, расшифровываем, выделяем свойство email, находим пользователя с 
-//   //таким email и рендерим его личную страницу 
-//   console.log(token);
-//   if (token) {
-//     jwt.verify(token, 'abcdef', function(err, decoded) {
-        
-//       if (err) {
-//         console.log(err);
-//         return next(err);    
-//       } else {
-        
-//         User.findOne({email: decoded._doc.email}, function (err, user) {
-//         console.log(decoded._doc.email);
-//           if (err) return next(err);
-//           res.render('common/_main_page', {
-//             name: user.name,
-//             description: user.description || 'Заполните описание...',
-//             avatar: user.avatar
-//           });
-//           res.end();
-//         }
-        
-//         )};
-//     });   
-//   //если токена нет, возвращаемся на страницу авторизации
-//   } else {
-//     res.render('index');
-//   }
-// });
