@@ -29,13 +29,13 @@ router.post('/profile', function(req, res, next) {
         var bg = files.upload_bg;
         if (ava) {
           fs.readFile(ava[0].path, function(err, data) {
-            var radom = Math.random().toString(36);
-            var randomName = radom.substring(2, radom.length);
-            var path = './public/upload/' + randomName + '-' + ava[0].originalFilename;
-            fs.writeFile(path, data, function(err) {
+            var radom_ava = Math.random().toString(36);
+            var randomName_ava = radom_ava.substring(2, radom_ava.length);
+            var path_ava = './public/upload/' + randomName_ava + '-' + ava[0].originalFilename;
+            fs.writeFile(path_ava, data, function(err) {
               if (name) user.name = name;
               user.description = description;
-              user.avatar = '/upload/' + randomName + '-' + ava[0].originalFilename;
+              user.avatar = '/upload/' + randomName_ava + '-' + ava[0].originalFilename;
               user.save();
               // fs.unlink('./public/' + old_ava, function(err) {
               //   if (err) throw err;
@@ -48,7 +48,29 @@ router.post('/profile', function(req, res, next) {
 
         } else {
           console.log('нет');
-          res.end();
+          // res.end();
+        }
+        if (bg) {
+          fs.readFile(bg[0].path, function(err, data) {
+            var radom = Math.random().toString(36);
+            var randomName = radom.substring(2, radom.length);
+            var path = './public/upload/' + randomName + '-' + bg[0].originalFilename;
+            fs.writeFile(path, data, function(err) {
+              if (name) user.name = name;
+              user.description = description;
+              user.bg = '/upload/' + randomName + '-' + bg[0].originalFilename;
+              user.save();
+              // fs.unlink('./public/' + old_ava, function(err) {
+              //   if (err) throw err;
+              //   console.log("file deleted");
+              // });
+            });
+
+          });
+
+        } else {
+          console.log('нет');
+          // res.end();
         }
       } else {
         if (name) user.name = name;

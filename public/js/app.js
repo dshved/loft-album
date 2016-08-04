@@ -359,9 +359,16 @@
 	      console.log(xhr);
 	    },
 	    success: function success(response) {
-	      $('.author__name').text(form.find('#user_name').val());
-	      $('.author__about').text(form.find('#user_about').val());
-	      $('.author__photo').attr('src', form.find('.modal__img-author').attr('src'));
+	      var userName = form.find('#user_name').val(),
+	          userAbout = form.find('#user_about').val(),
+	          userAvatar = form.find('.modal__img-author').attr('src'),
+	          userBg = 'background: url(' + form.find('.modal__img-bg').attr('src') + ')';
+
+	      $('.author__name').text(userName);
+	      $('.author__about').text(userAbout);
+	      $('.author__photo').attr('src', userAvatar);
+	      $('.header__cover').attr('style', userBg);
+	      $('.footer__main').attr('style', userBg);
 	    }
 	  });
 	  $('.modal__window_popup').addClass('close').empty();
@@ -393,10 +400,13 @@
 	  $('.modal__window_popup').removeClass('close');
 	  var deff = _showTemplate('templates/edit-popup.hbs');
 	  deff.then(function (template) {
+	    var bg = $('.header__cover').css('background-image');
+	    bg = bg.replace('url("', '').replace('")', '');
 	    $('.modal__window_popup').html(template({
 	      user_name: $('.author__name').text(),
 	      user_about: $('.author__about').text(),
-	      user_ava: $('.author__photo').attr('src')
+	      user_ava: $('.author__photo').attr('src'),
+	      user_bg: bg
 	    }));
 	  });
 	};
