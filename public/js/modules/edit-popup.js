@@ -61,6 +61,7 @@ var _showTemplate = function(path) {
 
 var _showModal = function(e) {
   e.preventDefault();
+  console.log("here");
   $('.modal__window_popup').removeClass('close');
   var deff = _showTemplate('templates/edit-popup.hbs');
   deff.then(function(template) {

@@ -58,53 +58,12 @@
 
 	var flip = __webpack_require__(3);
 	flip.init();
-	// $("#auth-btn").click(function(e) {
-	//   e.preventDefault();
-	//   $('.login__form').removeClass('load');
-	//   $('.login__title').removeClass('load-title');
-	//   $('.registration__form').addClass('load');
-	//   $('.registration__title').addClass('load-title');
-	// });
 
 	var editPupup = __webpack_require__(4);
 	editPupup.init();
 
 	var addAlbum = __webpack_require__(36);
 	addAlbum.init();
-	// var flip = document.getElementsByClassName('flip');
-	// var elem = flip[0];
-	// elem.addEventListener('click', function(e) {
-	//   elem.classList.toggle('flipping');
-	// });
-
-	// $('.auth-btn').click(function(e) {
-	//   e.preventDefault();
-
-	// });
-
-	// var Flip = (function() {
-	//   function init() {
-	//     _setUpListners();
-	//   };
-
-	//   function _setUpListners() {
-	//     $('#auth-btn').on('click', _formFlip);
-	//     $('#signin-btn').on('click', _formFlip);
-	//   };
-
-	//   var _formFlip = function(e){
-	//     e.preventDefault();
-	//     var flip = $('.flip');
-	//     flip.toggleClass('flipping');
-	//   };
-
-	//   return {
-	//     init: init
-	//   };
-
-	// })();
-
-	// Flip.init();
 
 /***/ },
 /* 2 */
@@ -427,6 +386,7 @@
 
 	var _showModal = function _showModal(e) {
 	  e.preventDefault();
+	  console.log("here");
 	  $('.modal__window_popup').removeClass('close');
 	  var deff = _showTemplate('templates/edit-popup.hbs');
 	  deff.then(function (template) {
