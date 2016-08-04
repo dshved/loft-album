@@ -9,3 +9,6 @@ editPupup.init();
 
 var addAlbum = require('./modules/album-popup.js');
 addAlbum.init();
+
+var slider = require('./modules/slider.js');
+slider.init();

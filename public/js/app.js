@@ -65,6 +65,9 @@
 	var addAlbum = __webpack_require__(36);
 	addAlbum.init();
 
+	var slider = __webpack_require__(37);
+	slider.init();
+
 /***/ },
 /* 2 */
 /***/ function(module, exports) {
@@ -5324,6 +5327,103 @@
 	  } else {
 	    preview.src = "";
 	  }
+	};
+
+	module.exports = {
+	  init: init
+	};
+
+/***/ },
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Handlebars = __webpack_require__(5);
+
+	function init() {
+	  _setUpListners();
+	};
+
+	function _setUpListners() {
+	  $('.photo__link').on('click', _showModal);
+
+	  $('.modal__slider').on('click', '#btn_close_modal', _closeModal);
+	  $('.modal__slider').on('click', '#next_slide', _nextSlide);
+	  $('.modal__slider').on('click', '#prev_slide', _prevSlide);
+	};
+
+	var _closeModal = function _closeModal(e) {
+	  e.preventDefault();
+	  $('.modal__slider').addClass('close').empty();
+	};
+
+	var _showTemplate = function _showTemplate(path) {
+	  var d = $.Deferred(),
+	      template;
+
+	  $.ajax({
+	    url: path,
+	    success: function success(data) {
+	      template = Handlebars.compile(data);
+	      d.resolve(template);
+	    }
+	  });
+
+	  return d.promise();
+	};
+
+	var _showModal = function _showModal(e) {
+	  e.preventDefault();
+	  var imgSrc = $(e.target).attr('src');
+	  var deff = _showTemplate('templates/slider.hbs');
+
+	  $('.modal__slider').removeClass('close');
+	  deff.then(function (template) {
+	    $('.modal__slider').html(template({
+	      this_img: imgSrc
+	    }));
+	  });
+	};
+
+	var count = 0;
+
+	var _nextImage = function _nextImage() {
+	  count++;
+	  var photoList = $('.photo__block');
+	  var images = photoList.find('.photo__image');
+	  var currentImg = count;
+	  if (count >= images.length) {
+	    count = 0;
+	    currentImg = count;
+	    return $(images[currentImg]).attr('src');
+	  } else {
+	    return $(images[currentImg]).attr('src');
+	  };
+	};
+	var _prevImage = function _prevImage() {
+	  count--;
+	  var photoList = $('.photo__block');
+	  var images = photoList.find('.photo__image');
+	  var currentImg = count;
+	  if (count < 0) {
+	    count = images.length - 1;
+	    currentImg = count;
+	    return $(images[currentImg]).attr('src');
+	  } else {
+	    console.log(count);
+	    return $(images[currentImg]).attr('src');
+	  };
+	};
+
+	var _nextSlide = function _nextSlide(e) {
+	  e.preventDefault();
+	  $('.slide').attr('src', _nextImage());
+	};
+
+	var _prevSlide = function _prevSlide(e) {
+	  e.preventDefault();
+	  $('.slide').attr('src', _prevImage());
 	};
 
 	module.exports = {
