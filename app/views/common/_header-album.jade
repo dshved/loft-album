@@ -10,11 +10,11 @@ header.header__cover(style= 'background: url('+albums.cover+')' || 'background: 
 		.author__controls
 			ul.control__list
 				li.control__item
-					a.control__link(href="#" id="home")
+					a.control__link(href="/main" id="home")
 						svg.svg__icon_controls
 							use(xmlns:xlink="http://www.w3.org/1999/xlink", xlink:href= "/sprites/svg/symbol/bg-sprite.svg#icon-home")
 				li.control__item
-					a.control__link(href="#" id="edit")
+					a.control__link(href="#" id="edit_album_header" data-id-album= albums._id)
 						svg.svg__icon_controls
 							use(xmlns:xlink="http://www.w3.org/1999/xlink", xlink:href= "/sprites/svg/symbol/bg-sprite.svg#icon-edit")
 	.header__album-info

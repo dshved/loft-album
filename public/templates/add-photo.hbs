@@ -11,24 +11,27 @@
       </button>
     </div>
     <div class="modal__form">
-      <form action="/addalbum" id="popup__add_album" class="form__add-album" method="post" enctype="multipart/form-data">
+      <form action="/main/album/addphoto" id="popup__add_photo" class="form__add-album" method="post" enctype="multipart/form-data">
         <div class="form__row">
           <input type="text" value="{{type_modal}}" name="type_modal" style="display: none;">
+          <input type="text" value="{{photo_id}}" name="photo_id" style="display: none;">
           <input type="text" value="{{album_id}}" name="album_id" style="display: none;">
           <label for="album_name" class="label">Название</label>
-          <input type="text" value="{{album_name}}" name="album_name" id="album_name" class="input">
+          <input type="text" value="{{photo_name}}" name="photo_name" id="photo_name" class="input">
         </div>
         <div class="form__row">
           <label for="album_description" class="label">Описание</label>
-          <textarea name="album_description" id="album_description" class="textarea">{{album_desc}}</textarea>
+          <textarea name="photo_description" id="photo_description" class="textarea">{{photo_desc}}</textarea>
         </div>
+
+        {{#if add_photo}}
         <div class="form__row">
           <div class="modal__preview-container">
             <div class="modal__preview_img">
-              <img src="{{album_img}}" alt="" class="modal__img modal__img-bg">
+              <img src="{{photo_img}}" alt="" class="modal__img modal__img-bg">
             </div>
           </div>
-          <label class="btn__upload">Загрузить обложку
+          <label class="btn__upload">Загрузить фотографию
             <input id="upload_bg" type="file" accept="image/jpeg,image/png,image/jpg" name="upload_bg" class="upload">
           </label>
           <div class="comment">
@@ -37,13 +40,14 @@
             </span>
           </div>
         </div>
+        {{/if}}
       </form>
     </div>
     <div class="modal__footer">
-      <button type="submit" id="btn_submit" form="popup__add_album" class="btn_modal">Сохранить</button>
+      <button type="submit" id="btn_submit" form="popup__add_photo" class="btn_modal">Сохранить</button>
       <button class="btn_cancel" id="btn_cancel_modal">Отменить</button>
-      {{#if album_id}}
-      <button class="btn_delete" id="bgn_del_album" >Удалить
+      {{#if edit_photo}}
+      <button class="btn_delete" id="del_photo" >Удалить
         <svg class="svg__icon_delete">
           <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/sprites/svg/symbol/bg-sprite.svg#icon-delete"></use>
         </svg>

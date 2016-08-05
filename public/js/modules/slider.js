@@ -38,7 +38,7 @@ var _showTemplate = function(path) {
 var _showModal = function(e) {
   e.preventDefault();
   var imgSrc = $(e.target).attr('src');
-  var deff = _showTemplate('templates/slider.hbs');
+  var deff = _showTemplate('../templates/slider.hbs');
 
   $('.modal__slider').removeClass('close');
   deff.then(function(template) {
@@ -52,7 +52,7 @@ var count = 0;
 
 var _nextImage = function() {
   count++;
-  var photoList = $('.photo__block');
+  var photoList = $('.slider_list');
   var images = photoList.find('.photo__image');  
   var currentImg = count;
   if (count >= images.length) {
@@ -65,7 +65,7 @@ var _nextImage = function() {
 };
 var _prevImage = function() {
   count--;
-  var photoList = $('.photo__block');
+  var photoList = $('.slider_list');
   var images = photoList.find('.photo__image');  
   var currentImg = count;
   if (count < 0) {

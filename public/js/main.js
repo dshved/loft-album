@@ -12,3 +12,6 @@ addAlbum.init();
 
 var slider = require('./modules/slider.js');
 slider.init();
+
+var addPhoto = require('./modules/photo-popup.js');
+addPhoto.init();

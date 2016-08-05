@@ -6,19 +6,24 @@ block header
 block content
 	section.photos
 		.albums_header
+			.title
+			a(href="#" data-id-album= albums._id).header_add-albums#add_photo
+				svg.svg__icon_controls
+					use(xmlns:xlink="http://www.w3.org/1999/xlink", xlink:href= "/sprites/svg/symbol/bg-sprite.svg#icon-add")
 		.photo-list
 			ul.albums_list
 				each photo in photos
-					li.albums_item
+					li.albums_item.slider_list
 						.albums_img
-							img(src= photo.file, alt="")
+							a.photo__link.photo__link-big(href="#")
+								img.photo__image(src= photo.file, alt= photo.description)
 						.albums_edit
-							a(href="#" ).edit-albums
+							a(href="#" data-id-photo= photo._id ).edit-photo
 								svg.svg__icon_controls
 									use(xmlns:xlink="http://www.w3.org/1999/xlink", xlink:href= "/sprites/svg/symbol/bg-sprite.svg#icon-edit")
-							.albums_desc= user.name
+							.albums_desc= photo.title
 		.modal__slider.close
-
+		.modal__add-album.close
 
 block footer
 	.footer__wrapper

@@ -68,6 +68,9 @@
 	var slider = __webpack_require__(37);
 	slider.init();
 
+	var addPhoto = __webpack_require__(38);
+	addPhoto.init();
+
 /***/ },
 /* 2 */
 /***/ function(module, exports) {
@@ -5274,7 +5277,21 @@
 	  $('.modal__add-album').on('click', '#btn_cancel_modal', _closeModal);
 	  $('.modal__add-album').on('change', '#upload_bg', _previewFileBg);
 
-	  $('modal__add-album').on('submit', '#popup__add_album', subform);
+	  $('.modal__add-album').on('submit', '#popup__add_album', subform);
+	  $('.modal__add-album').on('click', '#bgn_del_album', deletAlbum);
+	};
+	var current_album_id;
+	var deletAlbum = function deletAlbum(e) {
+	  e.preventDefault();
+	  $.ajax({
+	    url: '/delalbum',
+	    type: 'POST',
+	    data: { album_id: current_album_id },
+	    success: function success(data) {
+	      window.location.href = '/main';
+	    }
+	  });
+	  $('.modal__add-album').addClass('close').empty();
 	};
 
 	var subform = function subform(e) {
@@ -5286,7 +5303,7 @@
 	      console.log(xhr);
 	    },
 	    success: function success(response) {
-	      console.log(response);
+	      window.location.href = '/main';
 	    }
 	  });
 	  $('.modal__add-album').addClass('close').empty();
@@ -5334,6 +5351,7 @@
 	      album_img = thisAlbum.find('img').attr('src'),
 	      album_id = thisAlbum.find('.edit-albums').data('album-id');
 	  album_id = album_id.replace('"', '').replace('"', '');
+	  current_album_id = album_id;
 	  $('.modal__add-album').removeClass('close');
 	  var deff = _showTemplate('templates/add-albums.hbs');
 	  deff.then(function (template) {
@@ -5423,7 +5441,7 @@
 	var _showModal = function _showModal(e) {
 	  e.preventDefault();
 	  var imgSrc = $(e.target).attr('src');
-	  var deff = _showTemplate('templates/slider.hbs');
+	  var deff = _showTemplate('../templates/slider.hbs');
 
 	  $('.modal__slider').removeClass('close');
 	  deff.then(function (template) {
@@ -5437,7 +5455,7 @@
 
 	var _nextImage = function _nextImage() {
 	  count++;
-	  var photoList = $('.photo__block');
+	  var photoList = $('.slider_list');
 	  var images = photoList.find('.photo__image');
 	  var currentImg = count;
 	  if (count >= images.length) {
@@ -5450,7 +5468,7 @@
 	};
 	var _prevImage = function _prevImage() {
 	  count--;
-	  var photoList = $('.photo__block');
+	  var photoList = $('.slider_list');
 	  var images = photoList.find('.photo__image');
 	  var currentImg = count;
 	  if (count < 0) {
@@ -5471,6 +5489,183 @@
 	var _prevSlide = function _prevSlide(e) {
 	  e.preventDefault();
 	  $('.slide').attr('src', _prevImage());
+	};
+
+	module.exports = {
+	  init: init
+	};
+
+/***/ },
+/* 38 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Handlebars = __webpack_require__(5);
+	// var $ =  require('jquery');
+
+	function init() {
+	  _setUpListners();
+	};
+
+	function _setUpListners() {
+	  $('#add_photo').on('click', _showModalAdd);
+	  $('#edit_album_header').on('click', _showModalEditAlbum);
+
+	  $('.edit-photo').on('click', _showModalEdit);
+	  $('.get-albums').on('click', _showAlbums);
+	  $('.modal__add-album').on('click', '#btn_close_modal', _closeModal);
+	  $('.modal__add-album').on('click', '#btn_cancel_modal', _closeModal);
+	  $('.modal__add-album').on('change', '#upload_bg', _previewFileBg);
+
+	  $('.modal__add-album').on('submit', '#popup__add_photo', subform);
+	  $('.modal__add-album').on('click', '#del_photo', delphoto);
+	};
+
+	var current_photo_id;
+
+	var delphoto = function delphoto(e) {
+	  e.preventDefault();
+	  $.ajax({
+	    url: '/main/album/delphoto',
+	    type: 'POST',
+	    data: { photo_id: current_photo_id }
+	  }).done(function () {
+	    window.location.href = '/main/album';
+	    $('.modal__add-album').addClass('close').empty();
+	  });
+	};
+
+	var subform = function subform(e) {
+	  e.preventDefault();
+	  var form = $('#popup__add_photo');
+
+	  $(form).ajaxSubmit({
+	    error: function error(xhr) {
+	      console.log(xhr);
+	    },
+	    success: function success(response) {
+	      window.location.href = '/main/album';
+	    }
+	  });
+	  $('.modal__add-album').addClass('close').empty();
+	};
+
+	var _closeModal = function _closeModal(e) {
+	  e.preventDefault();
+	  $('.modal__add-album').addClass('close').empty();
+	};
+
+	var _showTemplate = function _showTemplate(path) {
+	  var d = $.Deferred(),
+	      template;
+
+	  $.ajax({
+	    url: path,
+	    success: function success(data) {
+	      template = Handlebars.compile(data);
+	      d.resolve(template);
+	    }
+	  });
+
+	  return d.promise();
+	};
+
+	var _showModalAdd = function _showModalAdd(e) {
+	  e.preventDefault();
+	  var album_id = $('#add_photo').data('id-album');
+	  album_id = album_id.replace('"', '').replace('"', '');
+
+	  $('.modal__add-album').removeClass('close');
+	  var deff = _showTemplate('../templates/add-photo.hbs');
+	  deff.then(function (template) {
+	    $('.modal__add-album').html(template({
+	      modal_title: 'Добавить фотографию',
+	      user_name: $('.author__name').text(),
+	      user_about: $('.author__about').text(),
+	      type_modal: 'add',
+	      album_img: '/img/no_photo.jpg',
+	      add_photo: 'add_photo',
+	      album_id: album_id
+	    }));
+	  });
+	};
+
+	var _showModalEdit = function _showModalEdit(e) {
+	  e.preventDefault();
+	  var thisAlbum = $(e.target).closest('.albums_item'),
+	      photo_name = thisAlbum.find('.albums_desc').text(),
+	      photo_desc = thisAlbum.find('img').attr('alt'),
+	      photo_img = thisAlbum.find('img').attr('src'),
+	      photo_id = thisAlbum.find('.edit-photo').data('id-photo');
+	  photo_id = photo_id.replace('"', '').replace('"', '');
+	  current_photo_id = photo_id;
+	  $('.modal__add-album').removeClass('close');
+	  var deff = _showTemplate('../templates/add-photo.hbs');
+	  deff.then(function (template) {
+	    $('.modal__add-album').html(template({
+	      modal_title: 'Редактировать фотографию',
+	      photo_name: photo_name,
+	      photo_desc: photo_desc,
+	      photo_img: photo_img,
+	      type_modal: 'edit',
+	      edit_photo: 'edit_photo',
+	      photo_id: photo_id
+	    }));
+	  });
+	};
+
+	var _showModalEditAlbum = function _showModalEditAlbum(e) {
+	  e.preventDefault();
+	  var thisAlbum = $('.album__information-container'),
+	      album_name = thisAlbum.find('.album__name').text(),
+	      album_desc = thisAlbum.find('.album__desc').text(),
+	      bg = $('.header__cover').css('background-image'),
+	      album_id = $('#edit_album_header').data('id-album');
+
+	  bg = bg.replace('url("', '').replace('")', '');
+	  album_id = album_id.replace('"', '').replace('"', '');
+
+	  $('.modal__add-album').removeClass('close');
+	  var deff = _showTemplate('../templates/add-albums.hbs');
+	  deff.then(function (template) {
+	    $('.modal__add-album').html(template({
+	      modal_title: 'Редактировать альбом',
+	      album_name: album_name,
+	      album_desc: album_desc,
+	      album_img: bg,
+	      type_modal: 'edit',
+	      album_id: album_id
+	    }));
+	  });
+	};
+
+	var _previewFileBg = function _previewFileBg() {
+	  var preview = $('.modal__img-bg')[0];
+	  var file = $("#upload_bg")[0].files[0];
+	  var reader = new FileReader();
+
+	  reader.onloadend = function () {
+	    preview.src = reader.result;
+	  };
+
+	  if (file) {
+	    reader.readAsDataURL(file);
+	  } else {
+	    preview.src = "";
+	  }
+	};
+
+	var _showAlbums = function _showAlbums(e) {
+	  // e.preventDefault();
+	  var thisAlbum = $(e.target).closest('.albums_item'),
+	      album_id = thisAlbum.find('.edit-albums').data('album-id');
+	  album_id = album_id.replace('"', '').replace('"', '');
+	  $.ajax({
+	    url: '/main/album',
+	    type: 'post',
+	    data: { album_id: album_id }
+	  });
 	};
 
 	module.exports = {
