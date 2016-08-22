@@ -5,7 +5,7 @@
 3. Run gulp
 
 [DEMO Фото альбомa] (https://loft-album.herokuapp.com/)
-
+[DEMO Фото альбомa] (http://dshved.tmweb.ru:5000)
 Team:
 <li>
 * **Денис Архипенко** - Teamlead
