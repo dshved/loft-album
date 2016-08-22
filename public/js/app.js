@@ -335,7 +335,6 @@
 	'use strict';
 
 	var Handlebars = __webpack_require__(5);
-	// var $ =  require('jquery');
 
 	function init() {
 	  _setUpListners();
@@ -400,6 +399,7 @@
 
 	var _showModal = function _showModal(e) {
 	  e.preventDefault();
+	  console.log("here");
 	  $('.modal__window_popup').removeClass('close');
 	  var deff = _showTemplate('templates/edit-popup.hbs');
 	  deff.then(function (template) {
