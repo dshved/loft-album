@@ -9,7 +9,7 @@ var config = {
       name: 'loft-album'
     },
     port: process.env.PORT || 3000,
-    db: 'mongodb://loft:test@ds029051.mlab.com:29051/loft'
+    db: 'mongodb://localhost:27017/loft'
   },
 
   test: {
