@@ -10,12 +10,12 @@
     </button>
   </div>
   <div class="modal__form">
-    <form action="#" id="popup__user_edit" class="form__edit_user" method="post">
+    <form action="/profile" id="popup__user_edit" class="form__edit_user" method="post" enctype="multipart/form-data">
       <div class="form__user">
         <div class="form__row">
           <label for="user_name" class="label">Имя</label>
           <input type="text" name="user_name" id="user_name" value="{{user_name}}" class="input"/>
-          <input type="text" name="user_surname" id="user_surname" value="{{user_surname}}" class="input"/>
+         {{!--  <input type="text" name="user_surname" id="user_surname" value="{{user_surname}}" class="input"/> --}}
         </div>
         <div class="form__row">
           <label for="user_about" class="label">О себе</label>
@@ -23,7 +23,7 @@
         </div>
         <div class="form__row">
           <div class="modal__preview-container">
-            <div class="modal__preview_img"><img src="/img/author.png" alt="" class="modal__img modal__img-author"/></div>
+            <div class="modal__preview_img"><img src="{{user_ava}}" alt="" class="modal__img modal__img-author"/></div>
           </div>
           <label class="btn__upload">Загрузить фотографию
             <input id="upload_ava" type="file" accept="image/jpeg,image/png,image/jpg" name="upload_ava" class="upload"/>
@@ -32,7 +32,7 @@
         </div>
         <div class="form__row">
           <div class="modal__preview-container">
-            <div class="modal__preview_img"><img src="/img/bg_main.jpg" alt="" class="modal__img modal__img-bg"/></div>
+            <div class="modal__preview_img"><img src="{{user_bg}}" alt="" class="modal__img modal__img-bg"/></div>
           </div>
           <label class="btn__upload">Загрузить фон
             <input id="upload_bg" type="file" accept="image/jpeg,image/png,image/jpg" name="upload_bg" class="upload"/>

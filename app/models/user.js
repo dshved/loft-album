@@ -26,6 +26,9 @@ var userSchema = new Schema({
   },
   avatar: {
     type: String
+  },
+  bg: {
+    type: String
   }
 });
 

@@ -1,0 +1,28 @@
+header.header__cover(style= 'background: url('+albums.cover+')' || 'background: url(/img/no_album_cover.jpg)')
+	.header__album-panel
+		.author__album-container
+			.author__album-frame
+				img.author__photo(src= user.avatar, alt= user.name)
+			h1.author__name= user.name
+		.album__information-container
+			.album__name= albums.title
+			.album__desc= albums.description
+		.author__controls
+			ul.control__list
+				li.control__item
+					a.control__link(href="/main" id="home")
+						svg.svg__icon_controls
+							use(xmlns:xlink="http://www.w3.org/1999/xlink", xlink:href= "/sprites/svg/symbol/bg-sprite.svg#icon-home")
+				li.control__item
+					a.control__link(href="#" id="edit_album_header" data-id-album= albums._id)
+						svg.svg__icon_controls
+							use(xmlns:xlink="http://www.w3.org/1999/xlink", xlink:href= "/sprites/svg/symbol/bg-sprite.svg#icon-edit")
+	.header__album-info
+		ul.album-info__list
+			li.album-info__item
+				.album-info__count 18 Фотографий
+			li.album-info__item
+				.album-info__count 10 Лайков
+			li.album-info__item
+				.album-info__count 4 Комментария
+	.modal__window_popup.close
