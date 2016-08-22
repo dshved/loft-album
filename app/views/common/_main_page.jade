@@ -10,22 +10,29 @@ block content
 		.photo-list
 			if photos
 				each photo in photos
-					section.photo__block
+					section.photo__block.slider_list
 						.photo__header
 							a.photo__link.photo__link-big(href="#")
-								img.photo__image(src= photo.file alt="new image")
+								img.photo__image(src= photo.file alt= photo.description)
 						.photo__main
 							.photo__avatar-wrapper
 								img.photo__avatar(src="/img/author.png" alt="user avatar")
 							.photo__content
-								span.photo__content-text Название фото
+								span.photo__content-text= photo.title
 								.photo__comment-wrapper 
-									span.photo__content-inner.photo__content-comments 3
-									span.photo__content-inner.photo__content-like 45
+									span.photo__content-icons
+										svg.svg__icon
+											use(xmlns:xlink="http://www.w3.org/1999/xlink", xlink:href= "/sprites/svg/symbol/bg-sprite.svg#icon-comments")
+										| 3
+									span.photo__content-icons
+										svg.svg__icon
+											use(xmlns:xlink="http://www.w3.org/1999/xlink", xlink:href= "/sprites/svg/symbol/bg-sprite.svg#icon-like")
+										| 45
 						.photo__footer
 							span.photo__name-album Название альбома
 			else
 				.h2 Фотографий пока нет
+		.modal__slider.close
 	//- include _notification
 	//- include _add_album
 	//- include _edit_popup
@@ -43,10 +50,11 @@ block content
 			if albums
 				each photo in albums
 					li.albums_item
-						.albums_img
-							img(src= photo.cover, alt=photo.description)
+						a(href="/main/album" data-album-id= photo._id).get-albums
+							.albums_img
+								img(src= photo.cover, alt=photo.description)
 						.albums_edit
-							a(href="#")
+							a(href="#" data-album-id= photo._id).edit-albums
 								svg.svg__icon_controls
 									use(xmlns:xlink="http://www.w3.org/1999/xlink", xlink:href= "/sprites/svg/symbol/bg-sprite.svg#icon-edit")
 							.albums_desc= photo.title

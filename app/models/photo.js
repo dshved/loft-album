@@ -6,6 +6,12 @@ var photoSchema = new Schema({
   	type: String,
   	required: true
   },
+  title: {
+    type: String,
+  },
+  description: {
+    type: String,
+  },
   file: {
   	type: String,
   	required: true,

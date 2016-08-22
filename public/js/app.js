@@ -65,6 +65,12 @@
 	var addAlbum = __webpack_require__(36);
 	addAlbum.init();
 
+	var slider = __webpack_require__(37);
+	slider.init();
+
+	var addPhoto = __webpack_require__(38);
+	addPhoto.init();
+
 /***/ },
 /* 2 */
 /***/ function(module, exports) {
@@ -355,9 +361,16 @@
 	      console.log(xhr);
 	    },
 	    success: function success(response) {
-	      $('.author__name').text(form.find('#user_name').val());
-	      $('.author__about').text(form.find('#user_about').val());
-	      $('.author__photo').attr('src', form.find('.modal__img-author').attr('src'));
+	      var userName = form.find('#user_name').val(),
+	          userAbout = form.find('#user_about').val(),
+	          userAvatar = form.find('.modal__img-author').attr('src'),
+	          userBg = 'background: url(' + form.find('.modal__img-bg').attr('src') + ')';
+
+	      $('.author__name').text(userName);
+	      $('.author__about').text(userAbout);
+	      $('.author__photo').attr('src', userAvatar);
+	      $('.header__cover').attr('style', userBg);
+	      $('.footer__main').attr('style', userBg);
 	    }
 	  });
 	  $('.modal__window_popup').addClass('close').empty();
@@ -390,10 +403,13 @@
 	  $('.modal__window_popup').removeClass('close');
 	  var deff = _showTemplate('templates/edit-popup.hbs');
 	  deff.then(function (template) {
+	    var bg = $('.header__cover').css('background-image');
+	    bg = bg.replace('url("', '').replace('")', '');
 	    $('.modal__window_popup').html(template({
 	      user_name: $('.author__name').text(),
 	      user_about: $('.author__about').text(),
-	      user_ava: $('.author__photo').attr('src')
+	      user_ava: $('.author__photo').attr('src'),
+	      user_bg: bg
 	    }));
 	  });
 	};
@@ -5254,13 +5270,28 @@
 	};
 
 	function _setUpListners() {
-	  $('#add_album').on('click', _showModal);
-
+	  $('#add_album').on('click', _showModalAdd);
+	  $('.edit-albums').on('click', _showModalEdit);
+	  $('.get-albums').on('click', _showAlbums);
 	  $('.modal__add-album').on('click', '#btn_close_modal', _closeModal);
 	  $('.modal__add-album').on('click', '#btn_cancel_modal', _closeModal);
 	  $('.modal__add-album').on('change', '#upload_bg', _previewFileBg);
 
-	  $('modal__add-album').on('submit', '#popup__add_album', subform);
+	  $('.modal__add-album').on('submit', '#popup__add_album', subform);
+	  $('.modal__add-album').on('click', '#bgn_del_album', deletAlbum);
+	};
+	var current_album_id;
+	var deletAlbum = function deletAlbum(e) {
+	  e.preventDefault();
+	  $.ajax({
+	    url: '/delalbum',
+	    type: 'POST',
+	    data: { album_id: current_album_id },
+	    success: function success(data) {
+	      window.location.href = '/main';
+	    }
+	  });
+	  $('.modal__add-album').addClass('close').empty();
 	};
 
 	var subform = function subform(e) {
@@ -5272,7 +5303,7 @@
 	      console.log(xhr);
 	    },
 	    success: function success(response) {
-	      console.log(response);
+	      window.location.href = '/main';
 	    }
 	  });
 	  $('.modal__add-album').addClass('close').empty();
@@ -5298,14 +5329,39 @@
 	  return d.promise();
 	};
 
-	var _showModal = function _showModal(e) {
+	var _showModalAdd = function _showModalAdd(e) {
 	  e.preventDefault();
 	  $('.modal__add-album').removeClass('close');
 	  var deff = _showTemplate('templates/add-albums.hbs');
 	  deff.then(function (template) {
 	    $('.modal__add-album').html(template({
+	      modal_title: 'Добавить альбом',
 	      user_name: $('.author__name').text(),
-	      user_about: $('.author__about').text()
+	      user_about: $('.author__about').text(),
+	      type_modal: 'add'
+	    }));
+	  });
+	};
+
+	var _showModalEdit = function _showModalEdit(e) {
+	  e.preventDefault();
+	  var thisAlbum = $(e.target).closest('.albums_item'),
+	      album_name = thisAlbum.find('.albums_desc').text(),
+	      album_desc = thisAlbum.find('img').attr('alt'),
+	      album_img = thisAlbum.find('img').attr('src'),
+	      album_id = thisAlbum.find('.edit-albums').data('album-id');
+	  album_id = album_id.replace('"', '').replace('"', '');
+	  current_album_id = album_id;
+	  $('.modal__add-album').removeClass('close');
+	  var deff = _showTemplate('templates/add-albums.hbs');
+	  deff.then(function (template) {
+	    $('.modal__add-album').html(template({
+	      modal_title: 'Редактировать альбом',
+	      album_name: album_name,
+	      album_desc: album_desc,
+	      album_img: album_img,
+	      type_modal: 'edit',
+	      album_id: album_id
 	    }));
 	  });
 	};
@@ -5324,6 +5380,292 @@
 	  } else {
 	    preview.src = "";
 	  }
+	};
+
+	var _showAlbums = function _showAlbums(e) {
+	  // e.preventDefault();
+	  var thisAlbum = $(e.target).closest('.albums_item'),
+	      album_id = thisAlbum.find('.edit-albums').data('album-id');
+	  album_id = album_id.replace('"', '').replace('"', '');
+	  $.ajax({
+	    url: '/main/album',
+	    type: 'post',
+	    data: { album_id: album_id }
+	  });
+	};
+
+	module.exports = {
+	  init: init
+	};
+
+/***/ },
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Handlebars = __webpack_require__(5);
+
+	function init() {
+	  _setUpListners();
+	};
+
+	function _setUpListners() {
+	  $('.photo__link').on('click', _showModal);
+
+	  $('.modal__slider').on('click', '#btn_close_modal', _closeModal);
+	  $('.modal__slider').on('click', '#next_slide', _nextSlide);
+	  $('.modal__slider').on('click', '#prev_slide', _prevSlide);
+	};
+
+	var _closeModal = function _closeModal(e) {
+	  e.preventDefault();
+	  $('.modal__slider').addClass('close').empty();
+	};
+
+	var _showTemplate = function _showTemplate(path) {
+	  var d = $.Deferred(),
+	      template;
+
+	  $.ajax({
+	    url: path,
+	    success: function success(data) {
+	      template = Handlebars.compile(data);
+	      d.resolve(template);
+	    }
+	  });
+
+	  return d.promise();
+	};
+
+	var _showModal = function _showModal(e) {
+	  e.preventDefault();
+	  var imgSrc = $(e.target).attr('src');
+	  var deff = _showTemplate('../templates/slider.hbs');
+
+	  $('.modal__slider').removeClass('close');
+	  deff.then(function (template) {
+	    $('.modal__slider').html(template({
+	      this_img: imgSrc
+	    }));
+	  });
+	};
+
+	var count = 0;
+
+	var _nextImage = function _nextImage() {
+	  count++;
+	  var photoList = $('.slider_list');
+	  var images = photoList.find('.photo__image');
+	  var currentImg = count;
+	  if (count >= images.length) {
+	    count = 0;
+	    currentImg = count;
+	    return $(images[currentImg]).attr('src');
+	  } else {
+	    return $(images[currentImg]).attr('src');
+	  };
+	};
+	var _prevImage = function _prevImage() {
+	  count--;
+	  var photoList = $('.slider_list');
+	  var images = photoList.find('.photo__image');
+	  var currentImg = count;
+	  if (count < 0) {
+	    count = images.length - 1;
+	    currentImg = count;
+	    return $(images[currentImg]).attr('src');
+	  } else {
+	    console.log(count);
+	    return $(images[currentImg]).attr('src');
+	  };
+	};
+
+	var _nextSlide = function _nextSlide(e) {
+	  e.preventDefault();
+	  $('.slide').attr('src', _nextImage());
+	};
+
+	var _prevSlide = function _prevSlide(e) {
+	  e.preventDefault();
+	  $('.slide').attr('src', _prevImage());
+	};
+
+	module.exports = {
+	  init: init
+	};
+
+/***/ },
+/* 38 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Handlebars = __webpack_require__(5);
+	// var $ =  require('jquery');
+
+	function init() {
+	  _setUpListners();
+	};
+
+	function _setUpListners() {
+	  $('#add_photo').on('click', _showModalAdd);
+	  $('#edit_album_header').on('click', _showModalEditAlbum);
+
+	  $('.edit-photo').on('click', _showModalEdit);
+	  $('.get-albums').on('click', _showAlbums);
+	  $('.modal__add-album').on('click', '#btn_close_modal', _closeModal);
+	  $('.modal__add-album').on('click', '#btn_cancel_modal', _closeModal);
+	  $('.modal__add-album').on('change', '#upload_bg', _previewFileBg);
+
+	  $('.modal__add-album').on('submit', '#popup__add_photo', subform);
+	  $('.modal__add-album').on('click', '#del_photo', delphoto);
+	};
+
+	var current_photo_id;
+
+	var delphoto = function delphoto(e) {
+	  e.preventDefault();
+	  $.ajax({
+	    url: '/main/album/delphoto',
+	    type: 'POST',
+	    data: { photo_id: current_photo_id }
+	  }).done(function () {
+	    window.location.href = '/main/album';
+	    $('.modal__add-album').addClass('close').empty();
+	  });
+	};
+
+	var subform = function subform(e) {
+	  e.preventDefault();
+	  var form = $('#popup__add_photo');
+
+	  $(form).ajaxSubmit({
+	    error: function error(xhr) {
+	      console.log(xhr);
+	    },
+	    success: function success(response) {
+	      window.location.href = '/main/album';
+	    }
+	  });
+	  $('.modal__add-album').addClass('close').empty();
+	};
+
+	var _closeModal = function _closeModal(e) {
+	  e.preventDefault();
+	  $('.modal__add-album').addClass('close').empty();
+	};
+
+	var _showTemplate = function _showTemplate(path) {
+	  var d = $.Deferred(),
+	      template;
+
+	  $.ajax({
+	    url: path,
+	    success: function success(data) {
+	      template = Handlebars.compile(data);
+	      d.resolve(template);
+	    }
+	  });
+
+	  return d.promise();
+	};
+
+	var _showModalAdd = function _showModalAdd(e) {
+	  e.preventDefault();
+	  var album_id = $('#add_photo').data('id-album');
+	  album_id = album_id.replace('"', '').replace('"', '');
+
+	  $('.modal__add-album').removeClass('close');
+	  var deff = _showTemplate('../templates/add-photo.hbs');
+	  deff.then(function (template) {
+	    $('.modal__add-album').html(template({
+	      modal_title: 'Добавить фотографию',
+	      user_name: $('.author__name').text(),
+	      user_about: $('.author__about').text(),
+	      type_modal: 'add',
+	      album_img: '/img/no_photo.jpg',
+	      add_photo: 'add_photo',
+	      album_id: album_id
+	    }));
+	  });
+	};
+
+	var _showModalEdit = function _showModalEdit(e) {
+	  e.preventDefault();
+	  var thisAlbum = $(e.target).closest('.albums_item'),
+	      photo_name = thisAlbum.find('.albums_desc').text(),
+	      photo_desc = thisAlbum.find('img').attr('alt'),
+	      photo_img = thisAlbum.find('img').attr('src'),
+	      photo_id = thisAlbum.find('.edit-photo').data('id-photo');
+	  photo_id = photo_id.replace('"', '').replace('"', '');
+	  current_photo_id = photo_id;
+	  $('.modal__add-album').removeClass('close');
+	  var deff = _showTemplate('../templates/add-photo.hbs');
+	  deff.then(function (template) {
+	    $('.modal__add-album').html(template({
+	      modal_title: 'Редактировать фотографию',
+	      photo_name: photo_name,
+	      photo_desc: photo_desc,
+	      photo_img: photo_img,
+	      type_modal: 'edit',
+	      edit_photo: 'edit_photo',
+	      photo_id: photo_id
+	    }));
+	  });
+	};
+
+	var _showModalEditAlbum = function _showModalEditAlbum(e) {
+	  e.preventDefault();
+	  var thisAlbum = $('.album__information-container'),
+	      album_name = thisAlbum.find('.album__name').text(),
+	      album_desc = thisAlbum.find('.album__desc').text(),
+	      bg = $('.header__cover').css('background-image'),
+	      album_id = $('#edit_album_header').data('id-album');
+
+	  bg = bg.replace('url("', '').replace('")', '');
+	  album_id = album_id.replace('"', '').replace('"', '');
+
+	  $('.modal__add-album').removeClass('close');
+	  var deff = _showTemplate('../templates/add-albums.hbs');
+	  deff.then(function (template) {
+	    $('.modal__add-album').html(template({
+	      modal_title: 'Редактировать альбом',
+	      album_name: album_name,
+	      album_desc: album_desc,
+	      album_img: bg,
+	      type_modal: 'edit',
+	      album_id: album_id
+	    }));
+	  });
+	};
+
+	var _previewFileBg = function _previewFileBg() {
+	  var preview = $('.modal__img-bg')[0];
+	  var file = $("#upload_bg")[0].files[0];
+	  var reader = new FileReader();
+
+	  reader.onloadend = function () {
+	    preview.src = reader.result;
+	  };
+
+	  if (file) {
+	    reader.readAsDataURL(file);
+	  } else {
+	    preview.src = "";
+	  }
+	};
+
+	var _showAlbums = function _showAlbums(e) {
+	  // e.preventDefault();
+	  var thisAlbum = $(e.target).closest('.albums_item'),
+	      album_id = thisAlbum.find('.edit-albums').data('album-id');
+	  album_id = album_id.replace('"', '').replace('"', '');
+	  $.ajax({
+	    url: '/main/album',
+	    type: 'post',
+	    data: { album_id: album_id }
+	  });
 	};
 
 	module.exports = {
